@@ -2,7 +2,6 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import {
-  Breadcrumbs,
   Content,
   ContentHeader,
   Header,
@@ -20,6 +19,8 @@ import {
   executeWorkflowRouteRef,
   workflowDefinitionsRouteRef,
 } from '../../routes';
+import { BaseOrchestratorPage } from '../BaseOrchestratorPage/BaseOrchestratorPage';
+import { OrchestratorSupportButton } from '../OrchestratorSupportButton/OrchestratorSupportButton';
 import {
   EditorViewKind,
   WorkflowEditor,
@@ -44,7 +45,6 @@ export const WorkflowDefinitionViewerPage = () => {
     if (!workflowEditor?.workflowItem) {
       return;
     }
-    console.log(workflowEditor?.workflowItem);
     setLoading(false);
     setName(workflowEditor.workflowItem.definition.name);
   }, [workflowEditor]);
@@ -54,40 +54,37 @@ export const WorkflowDefinitionViewerPage = () => {
   }, [executeWorkflowLink, navigate, workflowId]);
 
   return (
-    <Page themeId="tool">
-      <Header
-        title={name || ''}
-        subtitle={`Optional subhead that adds context to this page`}
-      />
-      <Content>
-        <Grid container spacing={3} direction="column">
-          <Grid item>
-            {loading && <Progress />}
-            <InfoCard
-              title={name}
-              action={
-                <Button
-                  color="primary"
-                  variant="contained"
-                  style={{ marginTop: 8, marginRight: 8 }}
-                  onClick={() => onExecute()}
-                >
-                  Execute
-                </Button>
-              }
-            >
-              <div style={{ height: '600px' }}>
-                <WorkflowEditor
-                  ref={workflowEditorRef}
-                  kind={EditorViewKind.EXTENDED_DIAGRAM_VIEWER}
-                  workflowId={workflowId}
-                  format={workflowFormat}
-                />
-              </div>
-            </InfoCard>
-          </Grid>
+    <Page>
+      <ContentHeader title="Definition">
+        <OrchestratorSupportButton />
+      </ContentHeader>
+      <Grid container spacing={3} direction="column">
+        <Grid item>
+          {loading && <Progress />}
+          <InfoCard
+            title={name}
+            action={
+              <Button
+                color="primary"
+                variant="contained"
+                style={{ marginTop: 8, marginRight: 8 }}
+                onClick={() => onExecute()}
+              >
+                Execute
+              </Button>
+            }
+          >
+            <div style={{ height: '600px' }}>
+              <WorkflowEditor
+                ref={workflowEditorRef}
+                kind={EditorViewKind.EXTENDED_DIAGRAM_VIEWER}
+                workflowId={workflowId}
+                format={workflowFormat}
+              />
+            </div>
+          </InfoCard>
         </Grid>
-      </Content>
+      </Grid>
     </Page>
   );
 };
