@@ -8,6 +8,7 @@ import {
   WorkflowExecutionResponse,
   WorkflowItem,
   WorkflowListResult,
+  WorkflowOverview,
   WorkflowSpecFile,
 } from '@janus-idp/backstage-plugin-orchestrator-common';
 
@@ -77,6 +78,17 @@ export const mockOrchestratorApi: OrchestratorApi = {
       totalCount: 1,
       offset: 2,
       limit: 3,
+    });
+  },
+  getWorkflowOverview(_workflowId: string): Promise<WorkflowOverview> {
+    return Promise.resolve({
+      id: mockWorkflowItem.definition.id,
+      name: mockWorkflowItem.definition.name,
+      lastTriggered: '2023-11-20T08:23:59.115Z',
+      lastRunStatus: 'COMPLETED',
+      type: 'Infrastructure',
+      avgDurationMs: 300004,
+      description: 'JSON based hello world workflow',
     });
   },
 };

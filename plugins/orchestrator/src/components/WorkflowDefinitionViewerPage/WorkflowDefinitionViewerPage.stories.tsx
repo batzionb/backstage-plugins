@@ -10,7 +10,7 @@ import { orchestratorRootRouteRef } from '../../routes';
 import { WorkflowDefinitionViewerPage } from './WorkflowDefinitionViewerPage';
 
 const meta = {
-  title: 'Orchestrator',
+  title: 'WorkflowDefinitionViewerPage',
   component: WorkflowDefinitionViewerPage,
   decorators: [
     Story =>

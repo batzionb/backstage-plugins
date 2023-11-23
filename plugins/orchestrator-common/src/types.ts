@@ -65,3 +65,13 @@ export enum WorkflowCategory {
   ASSESSMENT = 'assessment',
   INFRASTRUCTURE = 'infrastructure',
 }
+
+export interface WorkflowOverview {
+  name?: string;
+  lastTriggered?: string;
+  lastRunStatus?: string;
+  type?: string;
+  avgDurationMs?: number;
+  description?: string;
+  id: string;
+}

@@ -9,6 +9,7 @@ import {
   WorkflowExecutionResponse,
   WorkflowItem,
   WorkflowListResult,
+  WorkflowOverview,
   WorkflowSpecFile,
 } from '@janus-idp/backstage-plugin-orchestrator-common';
 
@@ -131,5 +132,12 @@ export class OrchestratorClient implements OrchestratorApi {
       throw await ResponseError.fromResponse(res);
     }
     return res.json();
+  }
+
+  async getWorkflowOverview(workflowId: string): Promise<WorkflowOverview> {
+    // TODO: call backend when ready. Pending Jira issue https://issues.redhat.com/browse/FLPATH-753
+    return Promise.resolve({
+      id: workflowId,
+    });
   }
 }
