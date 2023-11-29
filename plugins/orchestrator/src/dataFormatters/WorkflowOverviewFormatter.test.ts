@@ -10,12 +10,12 @@ describe('WorkflowOverviewAdapter', () => {
     const mockWorkflowOverview: WorkflowOverview = {
       workflowId: '123',
       name: 'Sample Workflow',
-      lastTriggeredMs: 1637833200000, // Replace with your timestamp in milliseconds
+      lastTriggeredMs: 1697276096000,
       lastRunStatus: 'Success',
       type: 'Sample Type',
       avgDurationMs: 150000,
       description: 'Sample description',
-      uri: 'https://example.com/sample-workflow.yaml',
+      uri: 'sample.workflow.sw.yaml',
     };
 
     const adaptedData: FormattedWorkflowOverview =
@@ -23,10 +23,10 @@ describe('WorkflowOverviewAdapter', () => {
 
     expect(adaptedData.id).toBe(mockWorkflowOverview.workflowId);
     expect(adaptedData.name).toBe(mockWorkflowOverview.name);
-    expect(adaptedData.lastTriggered).toBe('abc');
+    expect(adaptedData.lastTriggered).toBe('14/10/23 09:34:56');
     expect(adaptedData.lastRunStatus).toBe(mockWorkflowOverview.lastRunStatus);
     expect(adaptedData.type).toBe(mockWorkflowOverview.type);
-    expect(adaptedData.avgDuration).toBe('aaa');
+    expect(adaptedData.avgDuration).toBe('2 min');
     expect(adaptedData.description).toBe(mockWorkflowOverview.description);
     expect(adaptedData.format).toBe('yaml'); // Adjust based on your expected value
   });

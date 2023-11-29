@@ -47,6 +47,18 @@ const formatDuration = (milliseconds: number): string => {
   return 'less than a sec';
 };
 
+const formatRelativeTimeOrDateTime = (inputDate: number): string => {
+  const now = moment();
+  const targetDate = moment(inputDate);
+
+  if (targetDate.isSame(now, 'day') && targetDate.isSame(now, 'hour')) {
+    // If the date and hour are the same, show relative time
+    return targetDate.fromNow();
+  }
+  // If the date is not today, show exact date and time
+  return targetDate.format('DD/MM/YY HH:mm:ss');
+};
+
 const WorkflowOverviewFormatter: DataFormatterInterface<
   WorkflowOverview,
   FormattedWorkflowOverview
@@ -56,7 +68,7 @@ const WorkflowOverviewFormatter: DataFormatterInterface<
       id: data.workflowId,
       name: data.name || UNAVAILABLE,
       lastTriggered: data.lastTriggeredMs
-        ? moment(data.lastTriggeredMs).calendar()
+        ? moment(data.lastTriggeredMs).format('DD/MM/YY HH:mm:ss')
         : UNAVAILABLE,
       lastRunStatus: data.lastRunStatus || UNAVAILABLE,
       type: data.type || UNAVAILABLE,

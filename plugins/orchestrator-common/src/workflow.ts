@@ -33,6 +33,7 @@ export function toWorkflowYaml(definition: WorkflowDefinition): string {
 
 export function extractWorkflowFormatFromUri(uri: string): WorkflowFormat {
   const match = RegExp(/\.sw\.(json|yaml|yml)$/).exec(uri);
+
   if (match) {
     if (match[1] === 'yml' || match[1] === 'yaml') {
       return 'yaml';
