@@ -21,7 +21,7 @@ import {
 import { CreateWorkflowPage } from './CreateWorkflowPage';
 import { ExecuteWorkflowPage } from './ExecuteWorkflowPage';
 import { NewWorkflowViewerPage } from './NewWorkflowViewerPage';
-import { ExecuteWorkflowPage as ExecuteWorkflowPageNext } from './next/ExecuteWorkflowPage';
+import { ExecuteWorkflowPage as ExecuteWorkflowPageNext } from './next/ExecuteWorkflowPage/ExecuteWorkflowPage';
 import { OrchestratorPage as OrchestratorPageNext } from './next/OrchestratorPage';
 import { WorkflowInstancePage } from './next/WorkflowInstancePage';
 import { OrchestratorPage } from './OrchestratorPage';

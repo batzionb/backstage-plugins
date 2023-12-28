@@ -9,7 +9,7 @@ import { fakeWorkflowItem } from '../../__fixtures__/fakeWorkflowItem';
 import { orchestratorApiRef } from '../../api';
 import { MockOrchestratorClient } from '../../api/MockOrchestratorClient';
 import { orchestratorRootRouteRef } from '../../routes';
-import { ExecuteWorkflowPage } from './ExecuteWorkflowPage';
+import { ExecuteWorkflowPage } from './ExecuteWorkflowPage/ExecuteWorkflowPage';
 
 const meta = {
   title: 'Orchestrator/next/ExecuteWorkflowPage',

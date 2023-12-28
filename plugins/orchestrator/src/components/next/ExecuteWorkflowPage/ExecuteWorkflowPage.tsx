@@ -14,12 +14,13 @@ import { Button, Grid, Typography } from '@material-ui/core';
 
 import { WorkflowDataInputSchemaResponse } from '@janus-idp/backstage-plugin-orchestrator-common';
 
-import { orchestratorApiRef } from '../../api';
+import { orchestratorApiRef } from '../../../api';
 import {
   executeWorkflowRouteRef,
   workflowInstanceRouteRef,
-} from '../../routes';
-import { BaseOrchestratorPage } from './BaseOrchestratorPage';
+} from '../../../routes';
+import { BaseOrchestratorPage } from '../BaseOrchestratorPage';
+import { StepperForm } from './StepperForm';
 
 export interface ExecuteWorkflowPageProps {
   initialState?: Record<string, JsonValue>;
@@ -67,23 +68,19 @@ export const ExecuteWorkflowPage = (props: ExecuteWorkflowPageProps) => {
     setIsExecuting(false);
   }, [formState, instanceLink, navigate, orchestratorApi, value, workflowId]);
 
-  const executeButton = useMemo(
-    () => (
-      <Button variant="contained" color="primary" onClick={handleExecute}>
-        Execute
-      </Button>
-    ),
-    [handleExecute],
-  );
-
   return (
-    <BaseOrchestratorPage title="Execute">
+    <BaseOrchestratorPage
+      title={`Execute ${value?.workflowItem.definition.name ?? workflowId}`}
+    >
       {loading || (isExecuting && <Progress />)}
       {isReady && (
-        <InfoCard title={value?.workflowItem.definition.name ?? workflowId}>
-          {/* The multi-step form should be here */}
+        <>
           {value?.schema ? (
-            <>{executeButton}</>
+            <StepperForm
+              schema={value.schema}
+              handleExecute={handleExecute}
+              busy={isExecuting}
+            />
           ) : (
             <Grid container spacing={2} direction="column">
               <Grid item>
@@ -91,10 +88,9 @@ export const ExecuteWorkflowPage = (props: ExecuteWorkflowPageProps) => {
                   No data input schema found for this workflow
                 </Typography>
               </Grid>
-              <Grid item>{executeButton}</Grid>
             </Grid>
           )}
-        </InfoCard>
+        </>
       )}
     </BaseOrchestratorPage>
   );

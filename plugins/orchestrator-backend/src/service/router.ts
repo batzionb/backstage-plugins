@@ -266,7 +266,7 @@ function setupInternalRoutes(
     res.status(200).json(jobs);
   });
 
-  router.get('/workflows/:workflowId/schema', async (req, res) => {
+  router.get('/workflows/:workflowId/inputSchema', async (req, res) => {
     const {
       params: { workflowId },
     } = req;
