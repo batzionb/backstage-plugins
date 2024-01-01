@@ -60,7 +60,7 @@ export interface DataInputSchema {
 
 export interface WorkflowDataInputSchemaResponse {
   workflowItem: WorkflowItem;
-  dataInputSchema: DataInputSchema | undefined;
+  schemas: JSONSchema7[];
 }
 
 export interface WorkflowExecutionResponse {

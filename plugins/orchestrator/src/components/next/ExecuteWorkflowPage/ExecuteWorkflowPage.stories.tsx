@@ -5,10 +5,10 @@ import { TestApiProvider, wrapInTestApp } from '@backstage/test-utils';
 
 import { Meta, StoryObj } from '@storybook/react';
 
-import { fakeWorkflowItem } from '../../__fixtures__/fakeWorkflowItem';
-import { orchestratorApiRef } from '../../api';
-import { MockOrchestratorClient } from '../../api/MockOrchestratorClient';
-import { orchestratorRootRouteRef } from '../../routes';
+import { fakeDataInputSchemaReponse } from '../../../__fixtures__/fakeWorkflowDataInputSchemaResponse';
+import { orchestratorApiRef } from '../../../api';
+import { MockOrchestratorClient } from '../../../api/MockOrchestratorClient';
+import { orchestratorRootRouteRef } from '../../../routes';
 import { ExecuteWorkflowPage } from './ExecuteWorkflowPage';
 
 const meta = {
@@ -37,10 +37,9 @@ export const ExecuteWorkflowPageStory: Story = {
             [
               orchestratorApiRef,
               new MockOrchestratorClient({
-                getWorkflowDataInputSchemaResponse: Promise.resolve({
-                  workflowItem: fakeWorkflowItem,
-                  dataInputSchema: undefined,
-                }),
+                getWorkflowDataInputSchemaResponse: Promise.resolve(
+                  fakeDataInputSchemaReponse,
+                ),
               }),
             ],
           ]}

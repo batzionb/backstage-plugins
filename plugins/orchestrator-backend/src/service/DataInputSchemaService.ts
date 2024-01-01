@@ -14,10 +14,7 @@ import { JSONSchema4, JSONSchema7 } from 'json-schema';
 import { OpenAPIV3 } from 'openapi-types';
 import { Logger } from 'winston';
 
-import {
-  DataInputSchema,
-  WorkflowDefinition,
-} from '@janus-idp/backstage-plugin-orchestrator-common';
+import { WorkflowDefinition } from '@janus-idp/backstage-plugin-orchestrator-common';
 
 type OpenApiSchemaProperties = {
   [k: string]: OpenAPIV3.SchemaObject | OpenAPIV3.ReferenceObject;
@@ -1196,31 +1193,22 @@ export class DataInputSchemaService {
     return inputVariableSet;
   }
 
-  public parseComposition(
-    inputSchema: JSONSchema7,
-  ): DataInputSchema | undefined {
+  public parseComposition(inputSchema: JSONSchema7): JSONSchema7[] {
     if (!inputSchema.properties) {
-      return undefined;
+      return [];
     }
-
-    const mainSchema = { ...inputSchema };
 
     const refPaths = Object.values(inputSchema.properties)
       .map(p => (p as JSONSchema7).$ref)
       .filter((r): r is string => r !== undefined);
 
     if (!refPaths.length) {
-      return { mainSchema };
+      return [inputSchema];
     }
 
-    const refSchemas = refPaths
+    return refPaths
       .map(r => this.findReferencedSchema({ rootSchema: inputSchema, ref: r }))
       .filter((r): r is JSONSchema7 => r !== undefined);
-
-    return {
-      mainSchema,
-      refSchemas,
-    };
   }
 
   private findReferencedSchema(args: {

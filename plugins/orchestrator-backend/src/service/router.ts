@@ -6,6 +6,7 @@ import { JsonObject, JsonValue } from '@backstage/types';
 
 import express from 'express';
 import Router from 'express-promise-router';
+import { JSONSchema7 } from 'json-schema';
 import { Logger } from 'winston';
 
 import {
@@ -290,7 +291,7 @@ function setupInternalRoutes(
 
     const workflowItem: WorkflowItem = { uri, definition };
 
-    let dataInputSchema: DataInputSchema | undefined = undefined;
+    let schemas: JSONSchema7[] = [];
 
     if (definition.dataInputSchema) {
       const workflowInfo =
@@ -308,14 +309,14 @@ function setupInternalRoutes(
         return;
       }
 
-      dataInputSchema = dataInputSchemaService.parseComposition(
+      schemas = dataInputSchemaService.parseComposition(
         workflowInfo.inputSchema,
       );
     }
 
     const response: WorkflowDataInputSchemaResponse = {
       workflowItem,
-      dataInputSchema,
+      schemas,
     };
 
     res.status(200).json(response);

@@ -85,7 +85,7 @@ export const ExecuteWorkflowPage = () => {
       }
 
       let parameters: Record<string, JsonValue> = {};
-      if (schemaResponse.dataInputSchema?.mainSchema) {
+      if (schemaResponse.schemas?.mainSchema) {
         if (!formRef.current?.validateForm()) {
           return;
         }
@@ -152,7 +152,11 @@ export const ExecuteWorkflowPage = () => {
 
   return (
     <BaseOrchestratorPage>
-      <ContentHeader title="Execute">
+      <ContentHeader
+        title={`Run workflow ${
+          schemaResponse?.workflowItem?.definition?.name || ''
+        }`}
+      >
         <OrchestratorSupportButton />
       </ContentHeader>
       {loading && <Progress />}
@@ -183,10 +187,10 @@ export const ExecuteWorkflowPage = () => {
             </>
           }
         >
-          {schemaResponse?.dataInputSchema?.mainSchema ? (
+          {schemaResponse?.schemas?.mainSchema ? (
             <WrappedForm
               ref={formRef}
-              schema={schemaResponse.dataInputSchema.mainSchema}
+              schema={schemaResponse.schemas.mainSchema}
               validator={validator}
               showErrorList={false}
               onChange={onFormChanged}
