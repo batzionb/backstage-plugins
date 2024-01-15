@@ -3,446 +3,554 @@ import { WorkflowDataInputSchemaResponse } from '@janus-idp/backstage-plugin-orc
 export const fakeDataInputSchemaMultiStepReponse: WorkflowDataInputSchemaResponse =
   {
     workflowItem: {
-      uri: 'orchestrator-ansible-job-long-timeout.sw.yaml',
+      uri: 'quarkus-backend.sw.yaml',
       definition: {
-        id: 'orchestrator-ansible-job-long-timeout',
+        id: 'quarkus-backend',
         version: '1.0',
         specVersion: '0.8',
-        name: '[WF] Ansible Job with Jira and Timeout',
+        name: 'Quarkus Backend application',
         description:
-          '[WF] Launch an Ansible Job within Ansible Automation Platform with Jira integration and Timeout',
-        dataInputSchema:
-          'schemas/orchestrator-ansible-job-long__main_schema.json',
+          'Create a starter Quarkus backend application with a CI pipeline',
+        dataInputSchema: 'schemas/quarkus-backend__main-schema.json',
         functions: [
           {
-            name: 'runActionTemplateFetch',
+            name: 'runActionFetchTemplate',
             operation: 'specs/actions-openapi.json#fetch:template',
           },
           {
-            name: 'runActionGitHubRepoPush',
-            operation: 'specs/actions-openapi.json#github:repo:push',
+            name: 'runActionPublishGithub',
+            operation: 'specs/actions-openapi.json#publish:github',
           },
           {
             name: 'runActionCatalogRegister',
             operation: 'specs/actions-openapi.json#catalog:register',
           },
           {
-            name: 'jiraCreateIssue',
-            operation: 'specs/jira-openapi.json#createIssue',
+            name: 'fs:delete',
+            operation: 'specs/actions-openapi.json#fs:delete',
           },
           {
-            name: 'jiraCloseIssue',
-            operation: 'specs/jira-openapi.json#transitionIssue',
-          },
-          {
-            name: 'jiraGetIssueTransitions',
-            operation: 'specs/jira-openapi.json#getIssueTransitions',
-          },
-          {
-            name: 'print',
+            name: 'sysout',
             type: 'custom',
             operation: 'sysout',
           },
         ],
-        events: [
-          {
-            name: 'callbackEvent',
-            type: 'jira_webhook_callback',
-            source: 'jira.test',
-          },
-        ],
         errors: [
           {
-            name: 'Error',
+            name: 'Error on Action',
             code: 'java.lang.RuntimeException',
           },
         ],
-        start: 'Generating the Ansible Job component',
+        start: 'Generating the Source Code Component',
         states: [
           {
-            name: 'Generating the Ansible Job component',
+            name: 'Generating the Source Code Component',
             type: 'operation',
             actionMode: 'sequential',
             actions: [
               {
-                name: 'Run Template Fetch Action',
+                name: 'Fetch Template Action - Source Code',
                 functionRef: {
-                  refName: 'runActionTemplateFetch',
+                  refName: 'runActionFetchTemplate',
                   arguments: {
-                    id: '$WORKFLOW.instanceId',
-                    url: '"https://github.com/janus-idp/software-templates/tree/main/templates/github/launch-ansible-job/skeleton"',
-                    targetPath: '"argo/ansibleJobs/"',
+                    url: 'https://github.com/janus-idp/software-templates/tree/main/templates/github/quarkus-backend/skeleton',
                     values: {
-                      component_id: '.component_id',
-                      jobTemplate: '.jobTemplate',
-                      name: '.component_id',
-                      namespace: '.namespace',
-                      connection_secret: '.connection_secret',
-                    },
-                  },
-                },
-                actionDataFilter: {
-                  toStateData: '.ansibleJobResult',
-                },
-              },
-            ],
-            compensatedBy: 'Clean resources',
-            transition: 'Generating the Catalog Info Component',
-          },
-          {
-            name: 'Generating the Catalog Info Component',
-            type: 'operation',
-            actionMode: 'sequential',
-            actions: [
-              {
-                name: 'Catalog template action',
-                functionRef: {
-                  refName: 'runActionTemplateFetch',
-                  arguments: {
-                    id: '$WORKFLOW.instanceId',
-                    url: '"https://github.com/janus-idp/software-templates/tree/main/skeletons/catalog-info"',
-                    values: {
-                      githubOrg: '.githubOrg',
+                      orgName: '.orgName',
                       repoName: '.repoName',
                       owner: '.owner',
+                      system: '.system',
                       applicationType: 'api',
-                      system: 'system:default/podcast',
                       description: '.description',
+                      namespace: '.namespace',
+                      port: '.port',
+                      ci: '.ci',
+                      sourceControl: 'github.com',
+                      groupId: '.groupId',
+                      artifactId: '.artifactId',
+                      javaPackageName: '.javaPackageName',
+                      version: '.version',
                     },
                   },
                 },
                 actionDataFilter: {
-                  toStateData: '.catalogTemplateResult',
-                },
-              },
-            ],
-            compensatedBy: 'Clean resources',
-            transition: 'Publish to GitHub',
-          },
-          {
-            name: 'Publish to GitHub',
-            type: 'operation',
-            actionMode: 'sequential',
-            actions: [
-              {
-                name: 'Publish github action',
-                functionRef: {
-                  refName: 'runActionGitHubRepoPush',
-                  arguments: {
-                    id: '$WORKFLOW.instanceId',
-                    repoUrl:
-                      '"github.com?owner=" + .githubOrg + "&repo=" + .repoName',
-                    defaultBranch: '.defaultBranch',
-                    protectDefaultBranch: false,
-                    protectEnforceAdmins: false,
-                  },
-                },
-                actionDataFilter: {
-                  toStateData: '.publishGithubResult',
+                  toStateData: '.actionFetchTemplateSourceCodeResult',
                 },
               },
             ],
             onErrors: [
               {
-                errorRef: 'Error',
-                transition: 'Handle Github Error',
+                errorRef: 'Error on Action',
+                transition: 'Handle Error',
               },
             ],
-            transition: 'Register Catalog entry',
+            compensatedBy: 'Clear File System - Source Code',
+            transition: 'Generating the CI Component',
           },
           {
-            name: 'Handle Github Error',
-            type: 'operation',
-            actions: [
-              {
-                name: 'Handle Github Error',
-                functionRef: {
-                  refName: 'print',
-                  arguments: {
-                    message: 'Error publishing to github',
-                  },
-                },
-              },
-            ],
-            transition: 'Open Jira issue',
-          },
-          {
-            name: 'Open Jira issue',
-            type: 'callback',
-            action: {
-              name: 'callbackAction',
-              functionRef: {
-                refName: 'jiraCreateIssue',
-                arguments: {
-                  fields: {
-                    assignee: {
-                      name: '.jiraAssignee',
-                    },
-                    description:
-                      '"Create Github Repository: https://github.com/" + .githubOrg + "/" + .repoName + "\\n To create the new repository: https://github.com/new"',
-                    issuetype: {
-                      name: 'Task',
-                    },
-                    labels: [
-                      'backstage-workflow',
-                      '"workflowId=" + $WORKFLOW.instanceId',
-                    ],
-                    project: {
-                      key: '.jiraProjectKey',
-                    },
-                    reporter: {
-                      name: '.jiraReporter',
-                    },
-                    priority: {
-                      name: 'High',
-                    },
-                    summary: 'New Repository for Ansible project on Backstage',
-                  },
-                },
-              },
-              actionDataFilter: {
-                toStateData: '.jiraCreateIssueResult',
-              },
-            },
-            eventRef: 'callbackEvent',
-            eventDataFilter: {
-              toStateData: '.jiraResolveIssueResult',
-            },
-            timeouts: {
-              eventTimeout: 'PT20S',
-            },
-            compensatedBy: 'Close Jira issue',
-            transition: 'Check Repository Created',
-          },
-          {
-            name: 'Check Repository Created',
+            name: 'Generating the CI Component',
             type: 'switch',
             dataConditions: [
               {
-                condition: '.jiraResolveIssueResult != null',
-                transition: 'Publish to GitHub',
-                name: 'created',
+                condition: '${ .ci == "github" }',
+                transition: 'Generating the CI Component - GitHub',
+              },
+              {
+                condition: '${ .ci == "tekton" }',
+                transition: 'Generating the CI Component - Tekton',
               },
             ],
             defaultCondition: {
-              transition: {
-                compensate: true,
-                nextState: 'End workflow with error',
-              },
+              transition: 'Generating the CI Component - GitHub',
             },
           },
           {
-            name: 'Register Catalog entry',
+            name: 'Generating the CI Component - GitHub',
             type: 'operation',
             actionMode: 'sequential',
             actions: [
               {
-                name: 'Register catalog action',
+                name: 'Run Template Fetch Action - CI - GitHub',
+                functionRef: {
+                  refName: 'runActionFetchTemplate',
+                  arguments: {
+                    url: 'https://github.com/janus-idp/software-templates/tree/main/skeletons/github-actions',
+                    copyWithoutTemplating: ['".github/workflows/"'],
+                    values: {
+                      orgName: '.orgName',
+                      repoName: '.repoName',
+                      owner: '.owner',
+                      system: '.system',
+                      applicationType: 'api',
+                      description: '.description',
+                      namespace: '.namespace',
+                      port: '.port',
+                      ci: '.ci',
+                      sourceControl: 'github.com',
+                      groupId: '.groupId',
+                      artifactId: '.artifactId',
+                      javaPackageName: '.javaPackageName',
+                      version: '.version',
+                    },
+                  },
+                },
+                actionDataFilter: {
+                  toStateData: '.actionTemplateFetchCIResult',
+                },
+              },
+            ],
+            onErrors: [
+              {
+                errorRef: 'Error on Action',
+                transition: 'Handle Error',
+              },
+            ],
+            compensatedBy: 'Clear File System - CI',
+            transition: 'Generating the Catalog Info Component',
+          },
+          {
+            name: 'Generating the CI Component - Tekton',
+            type: 'operation',
+            actionMode: 'sequential',
+            actions: [
+              {
+                name: 'Run Template Fetch Action - CI - Tekton',
+                functionRef: {
+                  refName: 'runActionFetchTemplate',
+                  arguments: {
+                    url: 'https://github.com/janus-idp/software-templates/tree/main/skeletons/tekton',
+                    copyWithoutTemplating: ['".github/workflows/"'],
+                    values: {
+                      orgName: '.orgName',
+                      repoName: '.repoName',
+                      owner: '.owner',
+                      system: '.system',
+                      applicationType: 'api',
+                      description: '.description',
+                      namespace: '.namespace',
+                      imageUrl: '.imageUrl',
+                      imageRepository: '.imageRepository',
+                      imageBuilder: 's2i-java',
+                      port: '.port',
+                      ci: '.ci',
+                      sourceControl: 'github.com',
+                      groupId: '.groupId',
+                      artifactId: '.artifactId',
+                      javaPackageName: '.javaPackageName',
+                      version: '.version',
+                    },
+                  },
+                },
+                actionDataFilter: {
+                  toStateData: '.actionTemplateFetchCIResult',
+                },
+              },
+            ],
+            onErrors: [
+              {
+                errorRef: 'Error on Action',
+                transition: 'Handle Error',
+              },
+            ],
+            compensatedBy: 'Clear File System - CI',
+            transition: 'Generating the Catalog Info Component',
+          },
+          {
+            name: 'Generating the Catalog Info Component',
+            type: 'operation',
+            actions: [
+              {
+                name: 'Fetch Template Action - Catalog Info',
+                functionRef: {
+                  refName: 'runActionFetchTemplate',
+                  arguments: {
+                    url: 'https://github.com/janus-idp/software-templates/tree/main/skeletons/catalog-info',
+                    values: {
+                      orgName: '.orgName',
+                      repoName: '.repoName',
+                      owner: '.owner',
+                      system: '.system',
+                      applicationType: 'api',
+                      description: '.description',
+                      namespace: '.namespace',
+                      imageUrl: 'imageUrl',
+                      imageRepository: '.imageRepository',
+                      imageBuilder: 's2i-go',
+                      port: '.port',
+                      ci: '.ci',
+                      sourceControl: 'github.com',
+                      groupId: '.groupId',
+                      artifactId: '.artifactId',
+                      javaPackageName: '.javaPackageName',
+                      version: '.version',
+                    },
+                  },
+                },
+                actionDataFilter: {
+                  toStateData: '.actionFetchTemplateCatalogInfoResult',
+                },
+              },
+            ],
+            onErrors: [
+              {
+                errorRef: 'Error on Action',
+                transition: 'Handle Error',
+              },
+            ],
+            compensatedBy: 'Clear File System - Catalog',
+            transition: 'Publishing to the Source Code Repository',
+          },
+          {
+            name: 'Publishing to the Source Code Repository',
+            type: 'operation',
+            actionMode: 'sequential',
+            actions: [
+              {
+                name: 'Publish Github',
+                functionRef: {
+                  refName: 'runActionPublishGithub',
+                  arguments: {
+                    allowedHosts: ['"github.com"'],
+                    description: 'Workflow Action',
+                    repoUrl:
+                      '"github.com?owner=" + .orgName + "&repo=" + .repoName',
+                    defaultBranch: 'main',
+                    gitCommitMessage: 'Initial commit',
+                    allowAutoMerge: true,
+                    allowRebaseMerge: true,
+                  },
+                },
+                actionDataFilter: {
+                  toStateData: '.actionPublishResult',
+                },
+              },
+            ],
+            onErrors: [
+              {
+                errorRef: 'Error on Action',
+                transition: 'Handle Error',
+              },
+            ],
+            compensatedBy: 'Remove Source Code Repository',
+            transition: 'Registering the Catalog Info Component',
+          },
+          {
+            name: 'Registering the Catalog Info Component',
+            type: 'operation',
+            actionMode: 'sequential',
+            actions: [
+              {
+                name: 'Catalog Register Action',
                 functionRef: {
                   refName: 'runActionCatalogRegister',
                   arguments: {
-                    id: '$WORKFLOW.instanceId',
-                    repoContentsUrl: '.publishGithubResult.repoContentsUrl',
+                    repoContentsUrl: '.actionPublishResult.repoContentsUrl',
                     catalogInfoPath: '"/catalog-info.yaml"',
                   },
                 },
                 actionDataFilter: {
-                  toStateData: '.catalogRegisterResult',
+                  toStateData: '.actionCatalogRegisterResult',
                 },
               },
             ],
+            onErrors: [
+              {
+                errorRef: 'Error on Action',
+                transition: 'Handle Error',
+              },
+            ],
+            compensatedBy: 'Remove Catalog Info Component',
             end: true,
           },
           {
-            name: 'Clean resources',
+            name: 'Handle Error',
             type: 'operation',
             actions: [
               {
-                name: 'Clean resources',
+                name: 'Error Action',
                 functionRef: {
-                  refName: 'print',
+                  refName: 'sysout',
                   arguments: {
-                    message: 'Cleaning resources',
+                    message: 'Error on workflow, triggering compensations',
                   },
                 },
               },
             ],
-            usedForCompensation: true,
+            end: {
+              compensate: true,
+            },
           },
           {
-            name: 'Close Jira issue',
+            name: 'Clear File System - Source Code',
             type: 'operation',
-            actionMode: 'sequential',
+            usedForCompensation: true,
             actions: [
               {
-                name: 'get transition id',
-                actionDataFilter: {
-                  toStateData: '.jiraGetTransitionResult',
-                },
+                name: 'Clear FS Action',
                 functionRef: {
-                  refName: 'jiraGetIssueTransitions',
+                  refName: 'fs:delete',
                   arguments: {
-                    issueIdOrKey: '.jiraCreateIssueResult.id',
-                  },
-                },
-              },
-              {
-                name: 'close the jira issue',
-                actionDataFilter: {
-                  toStateData: '.jiraCloseIssueResult',
-                },
-                functionRef: {
-                  refName: 'jiraCloseIssue',
-                  arguments: {
-                    issueIdOrKey: '.jiraCreateIssueResult.id',
-                    transition: {
-                      id: '.jiraGetTransitionResult.transitions[] | select(.name | contains("Close")) | .id',
-                    },
-                    update: {
-                      comment: [
-                        {
-                          add: {
-                            body: 'Issue closed due to time out on Backstage workflow',
-                          },
-                        },
-                      ],
-                    },
+                    files: ['./'],
                   },
                 },
               },
             ],
-            usedForCompensation: true,
           },
           {
-            name: 'End workflow with error',
+            name: 'Clear File System - CI',
             type: 'operation',
+            usedForCompensation: true,
             actions: [
               {
-                name: 'End log',
+                name: 'Clear FS Action',
                 functionRef: {
-                  refName: 'print',
+                  refName: 'fs:delete',
                   arguments: {
-                    message: 'Ending',
+                    files: ['./'],
                   },
                 },
               },
             ],
-            end: true,
+          },
+          {
+            name: 'Clear File System - Catalog',
+            type: 'operation',
+            usedForCompensation: true,
+            actions: [
+              {
+                name: 'Clear FS Action',
+                functionRef: {
+                  refName: 'fs:delete',
+                  arguments: {
+                    files: ['./'],
+                  },
+                },
+              },
+            ],
+          },
+          {
+            name: 'Remove Source Code Repository',
+            type: 'operation',
+            usedForCompensation: true,
+            actions: [
+              {
+                name: 'Remove Source Code Repository',
+                functionRef: {
+                  refName: 'sysout',
+                  arguments: {
+                    message: 'Remove Source Code Repository',
+                  },
+                },
+              },
+            ],
+          },
+          {
+            name: 'Remove Catalog Info Component',
+            type: 'operation',
+            usedForCompensation: true,
+            actions: [
+              {
+                name: 'Remove Catalog Info Component',
+                functionRef: {
+                  refName: 'sysout',
+                  arguments: {
+                    message: 'Remove Catalog Info Component',
+                  },
+                },
+              },
+            ],
           },
         ],
       },
     },
     schemas: [
       {
-        $id: 'classpath:/schemas/orchestrator-ansible-job-long__sub_schema__Generating_the_Ansible_Job_component_Run_Template_Fetch_Action_runActionTemplateFetch.json',
-        title:
-          'orchestrator-ansible-job-long: Generating the Ansible Job component > Run Template Fetch Action > runActionTemplateFetch',
+        $id: 'classpath:/schemas/quarkus-backend__ref-schema__New_Component.json',
+        title: 'Provide information about the new component',
         $schema: 'http://json-schema.org/draft-07/schema#',
         type: 'object',
         properties: {
-          component_id: {
-            title: 'component_id',
-            description:
-              'Extracted from https://github.com/janus-idp/software-templates/tree/main/templates/github/launch-ansible-job/skeleton',
+          orgName: {
+            title: 'Organization Name',
+            description: 'Organization name',
             type: 'string',
           },
-          jobTemplate: {
-            title: 'jobTemplate',
-            description:
-              'Extracted from https://github.com/janus-idp/software-templates/tree/main/templates/github/launch-ansible-job/skeleton',
-            type: 'string',
-          },
-          namespace: {
-            title: 'namespace',
-            description:
-              'Extracted from https://github.com/janus-idp/software-templates/tree/main/templates/github/launch-ansible-job/skeleton',
-            type: 'string',
-          },
-          connection_secret: {
-            title: 'connection_secret',
-            description:
-              'Extracted from https://github.com/janus-idp/software-templates/tree/main/templates/github/launch-ansible-job/skeleton',
-            type: 'string',
-          },
-        },
-        required: [
-          'component_id',
-          'jobTemplate',
-          'namespace',
-          'connection_secret',
-        ],
-      },
-      {
-        $id: 'classpath:/schemas/orchestrator-ansible-job-long__sub_schema__Generating_the_Catalog_Info_Component_Catalog_template_action_runActionTemplateFetch.json',
-        title:
-          'orchestrator-ansible-job-long: Generating the Catalog Info Component > Catalog template action > runActionTemplateFetch',
-        $schema: 'http://json-schema.org/draft-07/schema#',
-        type: 'object',
-        properties: {
           repoName: {
-            title: 'repoName',
-            description:
-              'Extracted from https://github.com/janus-idp/software-templates/tree/main/skeletons/catalog-info',
-            type: 'string',
-          },
-          owner: {
-            title: 'owner',
-            description:
-              'Extracted from https://github.com/janus-idp/software-templates/tree/main/skeletons/catalog-info',
+            title: 'Repository Name',
+            description: 'Repository name',
             type: 'string',
           },
           description: {
-            title: 'description',
-            description:
-              'Extracted from https://github.com/janus-idp/software-templates/tree/main/skeletons/catalog-info',
+            title: 'Description',
+            description: 'Help others understand what this component is for',
             type: 'string',
           },
+          owner: {
+            title: 'Owner',
+            description: 'An entity from the catalog',
+            type: 'string',
+          },
+          system: {
+            title: 'System',
+            description: 'An entity from the catalog',
+            type: 'string',
+          },
+          port: {
+            title: 'Port',
+            description: 'Override the port exposed for the application',
+            type: 'number',
+            default: 8080,
+          },
         },
-        required: ['repoName', 'owner', 'description'],
+        required: ['orgName', 'repoName', 'owner', 'system', 'port'],
       },
       {
-        $id: 'classpath:/schemas/orchestrator-ansible-job-long__sub_schema__Publish_to_GitHub_Publish_github_action_runActionGitHubRepoPush.json',
-        title:
-          'orchestrator-ansible-job-long: Publish to GitHub > Publish github action > runActionGitHubRepoPush',
+        $id: 'classpath:/schemas/quarkus-backend__ref-schema__Java_Metadata.json',
+        title: 'Provide information about the Java metadata',
         $schema: 'http://json-schema.org/draft-07/schema#',
         type: 'object',
         properties: {
-          defaultBranch: {
-            title: 'Default Branch',
+          groupId: {
+            title: 'Group ID',
+            description: 'Maven Group ID eg (io.janus)',
             type: 'string',
+            default: 'io.janus',
+          },
+          artifactId: {
+            title: 'Artifact ID',
+            description: 'Maven Artifact ID',
+            type: 'string',
+            default: 'quarkusapp',
+          },
+          javaPackageName: {
+            title: 'Java Package Namespace',
             description:
-              "Sets the default branch on the repository. The default value is 'master'",
+              'Name for the Java Package (ensure to use the / character as this is used for folder structure) should match Group ID and Artifact ID',
+            type: 'string',
+            default: 'io/janus/quarkusapp',
+          },
+          version: {
+            title: 'Version',
+            description: 'Maven Artifact Version',
+            type: 'string',
+            default: '1.0.0-SNAPSHOT',
           },
         },
-        required: ['defaultBranch'],
+        required: ['groupId', 'artifactId', 'javaPackageName', 'version'],
       },
       {
-        $id: 'classpath:/schemas/orchestrator-ansible-job-long__sub_schema__Additional_input_data.json',
-        title: 'orchestrator-ansible-job-long: Additional input data',
+        $id: 'classpath:/schemas/quarkus-backend__ref-schema__CI_Method.json',
+        title: 'Provide information about the CI method',
         $schema: 'http://json-schema.org/draft-07/schema#',
         type: 'object',
         properties: {
-          githubOrg: {
-            title: 'githubOrg',
+          ci: {
+            title: 'CI Method',
             type: 'string',
-            description: 'Extracted from the Workflow definition',
-          },
-          jiraAssignee: {
-            title: 'jiraAssignee',
-            type: 'string',
-            description: 'Extracted from the Workflow definition',
-          },
-          jiraProjectKey: {
-            title: 'jiraProjectKey',
-            type: 'string',
-            description: 'Extracted from the Workflow definition',
-          },
-          jiraReporter: {
-            title: 'jiraReporter',
-            type: 'string',
-            description: 'Extracted from the Workflow definition',
+            default: 'github',
+            oneOf: [
+              {
+                const: 'github',
+                title: 'GitHub Action',
+              },
+              {
+                const: 'tekton',
+                title: 'Tekton',
+              },
+            ],
           },
         },
+        allOf: [
+          {
+            if: {
+              properties: {
+                ci: {
+                  const: 'github',
+                },
+              },
+            },
+          },
+          {
+            if: {
+              properties: {
+                ci: {
+                  const: 'tekton',
+                },
+              },
+            },
+            then: {
+              properties: {
+                imageRepository: {
+                  title: 'Image Registry',
+                  description: 'The registry to use',
+                  type: 'string',
+                  default: 'quay.io',
+                  oneOf: [
+                    {
+                      const: 'quay.io',
+                      title: 'Quay',
+                    },
+                    {
+                      const: 'image-registry.openshift-image-registry.svc:5000',
+                      title: 'Internal OpenShift Registry',
+                    },
+                  ],
+                },
+                imageUrl: {
+                  title: 'Image URL',
+                  description:
+                    'The Quay.io or OpenShift Image URL <REGISTRY>/<IMAGE_URL>/<REPO_NAME>',
+                  type: 'string',
+                },
+                namespace: {
+                  title: 'Namespace',
+                  description: 'The namespace for deploying resources',
+                  type: 'string',
+                },
+              },
+              required: ['namespace', 'imageUrl', 'imageRepository'],
+            },
+          },
+        ],
       },
     ],
   };
