@@ -5,6 +5,7 @@
   "compilerOptions": {
     "outDir": "../../dist-types/plugins/orchestrator",
     "rootDir": ".",
-    "emitDeclarationOnly": false
+    "emitDeclarationOnly": false,
+    "types": ["node", "cypress", "@testing-library/cypress"]
   }
 }

@@ -17,7 +17,7 @@ import {
 import { CreateWorkflowPage } from './CreateWorkflowPage';
 import { ExecuteWorkflowPage } from './ExecuteWorkflowPage/ExecuteWorkflowPage';
 import { NewWorkflowViewerPage } from './NewWorkflowViewerPage';
-import { OrchestratorPage } from './OrchestratorPage';
+import { OrchestratorPage } from './OrchestratorPage/OrchestratorPage';
 import { WorkflowDefinitionViewerPage } from './WorkflowDefinitionViewerPage';
 import { WorkflowInstancePage } from './WorkflowInstancePage';
 
