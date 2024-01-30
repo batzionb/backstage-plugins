@@ -4,11 +4,11 @@ import { TestApiProvider, wrapInTestApp } from '@backstage/test-utils';
 
 import { Meta, StoryObj } from '@storybook/react';
 
-import { generateFakeProcessInstances } from '../__fixtures__/fakeLongProcessInstanceList';
-import { fakeWorkflowOverviewList } from '../__fixtures__/fakeWorkflowOverviewList';
-import { orchestratorApiRef } from '../api';
-import { MockOrchestratorClient } from '../api/MockOrchestratorClient';
-import { orchestratorRootRouteRef } from '../routes';
+import { generateFakeProcessInstances } from '../../__fixtures__/fakeLongProcessInstanceList';
+import { fakeWorkflowOverviewList } from '../../__fixtures__/fakeWorkflowOverviewList';
+import { orchestratorApiRef } from '../../api';
+import { MockOrchestratorClient } from '../../api/MockOrchestratorClient';
+import { orchestratorRootRouteRef } from '../../routes';
 import { WorkflowRunsTabContent } from './WorkflowRunsTabContent';
 
 const meta = {

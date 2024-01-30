@@ -10,7 +10,7 @@ import { fakeWorkflowOverviewList } from '../__fixtures__/fakeWorkflowOverviewLi
 import { orchestratorApiRef } from '../api';
 import { MockOrchestratorClient } from '../api/MockOrchestratorClient';
 import { orchestratorRootRouteRef } from '../routes';
-import { WorkflowsTable } from './WorkflowsTable';
+import { WorkflowsTable } from './OrchestratorPage/WorkflowsTable';
 
 const meta = {
   title: 'Orchestrator/next/WorkflowsTable',

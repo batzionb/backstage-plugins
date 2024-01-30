@@ -17,15 +17,15 @@ import {
   ProcessInstanceStateValues,
 } from '@janus-idp/backstage-plugin-orchestrator-common';
 
-import { orchestratorApiRef } from '../api';
-import { DEFAULT_TABLE_PAGE_SIZE, VALUE_UNAVAILABLE } from '../constants';
-import usePolling from '../hooks/usePolling';
-import { workflowInstanceRouteRef } from '../routes';
-import { capitalize, ellipsis } from '../utils/StringUtils';
-import { Selector } from './Selector';
-import { mapProcessInstanceToDetails } from './WorkflowInstancePageContent';
-import { WorkflowInstanceStatusIndicator } from './WorkflowInstanceStatusIndicator';
-import { WorkflowRunDetail } from './WorkflowRunDetail';
+import { orchestratorApiRef } from '../../api';
+import { DEFAULT_TABLE_PAGE_SIZE, VALUE_UNAVAILABLE } from '../../constants';
+import usePolling from '../../hooks/usePolling';
+import { workflowInstanceRouteRef } from '../../routes';
+import { capitalize, ellipsis } from '../../utils/StringUtils';
+import { Selector } from '../Selector';
+import { mapProcessInstanceToDetails } from '../WorkflowInstancePageContent';
+import { WorkflowInstanceStatusIndicator } from '../WorkflowInstanceStatusIndicator';
+import { WorkflowRunDetail } from '../WorkflowRunDetail';
 
 const makeSelectItemsFromProcessInstanceValues = () =>
   [
@@ -135,6 +135,7 @@ export const WorkflowRunsTabContent = () => {
         isLoading={loading}
         columns={columns}
         data={filteredData}
+        aria-label="workflow runs table"
       />
     </InfoCard>
   );
