@@ -27,7 +27,6 @@ This quickstart guide will help you install the Orchestrator using the helm char
    Verify that you see the three pre-defined workflows listed in the Workflows table: _Greeting workflow_, _Move2Kube workflow_, and _MTA Analysis_.
 
 7. **Execute Greeting Workflow**:
-
    The primary action which can be called on a workflow is the `Run`.
    Choose the `Greeting Workflow` and click `Run`
 
