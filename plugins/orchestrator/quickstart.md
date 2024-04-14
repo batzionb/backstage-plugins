@@ -1,6 +1,6 @@
 ## Quickstart Guide
 
-This quickstart guide will help you install the Orchestrator using the helm chart and execute a sample workflow.
+This quickstart guide will help you install the Orchestrator using the helm chart and execute a sample workflow through the RHDH orchestrator plugin UI.
 
 1. **Install Orchestrator**:
    Follow the provided [installation instructions for Orchestrator](https://www.parodos.dev/orchestrator-helm-chart/).
