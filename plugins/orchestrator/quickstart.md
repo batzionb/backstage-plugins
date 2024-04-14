@@ -12,7 +12,7 @@ This quickstart guide will help you install the Orchestrator using the helm char
    Open your web browser and navigate to the Backstage application. Retrieve the URL using the following openshift CLI command.
 
    ```bash
-   oc get route backstage-backstage -n rhdh-operator -o=jsonpath='{.spec.host}'
+   oc get route backstage-backstage -n rhdh-operator -o jsonpath='{.spec.host}'
    ```
 
    Make sure the route is accessible to you locally.
@@ -29,9 +29,7 @@ This quickstart guide will help you install the Orchestrator using the helm char
    ![Selection_008](https://github.com/batzionb/backstage-plugins/assets/22211154/5c03408e-00b0-48eb-82c0-d14854d75280)
    The 'Run workflow' page will open. Click 'Next step' and then 'Run'
    ![Selection_010](https://github.com/batzionb/backstage-plugins/assets/22211154/e90a0617-2f96-4eb1-89ec-2207e0d4cab4)
-   
-   
-
+   ![Selection_011](https://github.com/batzionb/backstage-plugins/assets/22211154/5c909f4e-d5f7-40c2-af00-ee18db3146dc)
 9. **Monitor Workflow Status**:
    Wait for the status of the Greeting workflow execution to become _Completed_. This may take a moment.
 
