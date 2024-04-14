@@ -5,8 +5,8 @@ This quickstart guide will help you install the Orchestrator using the helm char
 1. **Install Orchestrator**:
    Follow the provided [installation instructions for Orchestrator](https://www.parodos.dev/orchestrator-helm-chart/).
 
-2. **Install Workflows**:
-   Follow the provided [installation instructions for workflows](https://www.parodos.dev/serverless-workflows-config/).
+2. **Install a sample workflow**:
+   Follow the [installation instructions for the greetings workflow]([https://www.parodos.dev/serverless-workflows-config/](https://github.com/parodos-dev/serverless-workflows-config/blob/gh-pages/docs/greeting/README.md)).
 
 3. **Access Backstage**:
    Open your web browser and navigate to the Backstage application. Retrieve the URL using the following openshift CLI command.
