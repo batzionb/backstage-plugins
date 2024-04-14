@@ -23,14 +23,11 @@ This quickstart guide will help you install the Orchestrator using the helm char
 5. **Navigate to Orchestrator**:
    Navigate to the Orchestrator page by clicking on the Orchestrator icon in the left navigation menu.
    ![Selection_006](https://github.com/batzionb/backstage-plugins/assets/22211154/ab28e602-2d42-4b8c-910f-982ebb0149d9)
-   
-7. **Verify Pre-defined Workflows**:
-   Verify that you see the three pre-defined workflows listed in the Workflows table: _Greeting workflow_, _Move2Kube workflow_, and _MTA Analysis_.
 
-8. **Execute Greeting Workflow**:
+7. **Execute Greeting Workflow**:
    The primary action which can be called on a workflow is the `Run`.
    Choose the `Greeting Workflow` and click `Run`
 
-9. **Monitor Workflow Status**:
+8. **Monitor Workflow Status**:
    Wait for the status of the Greeting workflow execution to become _Completed_. This may take a moment.
 
