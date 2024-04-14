@@ -24,10 +24,14 @@ This quickstart guide will help you install the Orchestrator using the helm char
    Navigate to the Orchestrator page by clicking on the Orchestrator icon in the left navigation menu.
    ![Selection_006](https://github.com/batzionb/backstage-plugins/assets/22211154/ab28e602-2d42-4b8c-910f-982ebb0149d9)
 
-7. **Execute Greeting Workflow**:
-   The primary action which can be called on a workflow is the `Run`.
-   Choose the `Greeting Workflow` and click `Run`
+7. **Execute Greeting Workflow**:   
+   Click on the 'Execute' button in the ACTIONS column of the Greeting workflow.
+   ![Selection_008](https://github.com/batzionb/backstage-plugins/assets/22211154/5c03408e-00b0-48eb-82c0-d14854d75280)
+   The 'Run workflow' page will open. Click 'Next step' and then 'Run'
+   ![Selection_010](https://github.com/batzionb/backstage-plugins/assets/22211154/e90a0617-2f96-4eb1-89ec-2207e0d4cab4)
+   
+   
 
-8. **Monitor Workflow Status**:
+9. **Monitor Workflow Status**:
    Wait for the status of the Greeting workflow execution to become _Completed_. This may take a moment.
 
