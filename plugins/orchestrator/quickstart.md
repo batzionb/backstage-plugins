@@ -1,6 +1,6 @@
 ## Quickstart Guide
 
-This quickstart guide will help you install the Orchestrator using the helm chart and execute a sample workflow through the RHDH orchestrator plugin UI.
+This quickstart guide will help you install the Orchestrator using the helm chart and execute a sample workflow through the Red Hat Developer Hub orchestrator plugin UI.
 
 1. **Install Orchestrator**:
    Follow the provided [installation instructions for Orchestrator](https://www.parodos.dev/orchestrator-helm-chart/).
@@ -8,8 +8,8 @@ This quickstart guide will help you install the Orchestrator using the helm char
 2. **Install a sample workflow**:
    Follow the [installation instructions for the greetings workflow](https://github.com/parodos-dev/serverless-workflows-config/blob/gh-pages/docs/greeting/README.md).
 
-3. **Access Backstage**:
-   Open your web browser and navigate to the Backstage application. Retrieve the URL using the following openshift CLI command.
+3. **Access Red Hat Developer Hub**:
+   Open your web browser and navigate to the Red Hat Developer Hub application. Retrieve the URL using the following openshift CLI command.
    ```bash
    oc get route backstage-backstage -n rhdh-operator -o jsonpath='{.spec.host}'
    ```
