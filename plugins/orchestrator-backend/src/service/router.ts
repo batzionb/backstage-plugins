@@ -19,6 +19,7 @@ import {
   WorkflowInputSchemaResponse,
 } from '@janus-idp/backstage-plugin-orchestrator-common';
 
+import * as pkg from '../../package.json';
 import { RouterArgs } from '../routerWrapper';
 import { buildPagination } from '../types/pagination';
 import { V1 } from './api/v1';
@@ -57,15 +58,7 @@ export async function createBackendRouter(
   const router = Router();
   router.use(express.json());
   router.use('/workflows', express.text());
-  router.use(
-    '/static',
-    express.static(
-      resolvePackagePath(
-        '@janus-idp/backstage-plugin-orchestrator-backend',
-        'static',
-      ),
-    ),
-  );
+  router.use('/static', express.static(resolvePackagePath(pkg.name, 'static')));
 
   router.get('/health', (_, response) => {
     logger.info('PONG!');
