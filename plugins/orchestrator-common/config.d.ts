@@ -65,6 +65,11 @@ export interface Config {
     /**
      * Configuration for the workflow editor.
      */
+    /**
+     * Path to the envelope context (either a remote url or a local path under app/public folder).
+     * Default: https://sandbox.kie.org/swf-chrome-extension/0.32.0
+     * @deepVisibility frontend
+     */
     editor?: {
       /**
        * Path to the envelope context (either a remote url or a local path under app/public folder).
