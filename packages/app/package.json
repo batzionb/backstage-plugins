@@ -60,7 +60,7 @@
     "react-router": "^6.17.0",
     "react-router-dom": "^6.17.0",
     "react-use": "^17.4.0",
-    "@janus-idp/backstage-plugin-orchestrator": "1.10.0"
+    "@janus-idp/backstage-plugin-orchestrator": "1.10.2"
   },
   "devDependencies": {
     "@backstage/cli": "0.26.2",

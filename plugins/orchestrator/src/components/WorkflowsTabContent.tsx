@@ -19,6 +19,7 @@ export const WorkflowsTabContent = () => {
   const orchestratorApi = useApi(orchestratorApiRef);
 
   const fetchWorkflowOverviews = useCallback(async () => {
+    console.log("fetchWorkflowOverviews");
     const data = await orchestratorApi.listWorkflowOverviews();
     return data.items;
   }, [orchestratorApi]);

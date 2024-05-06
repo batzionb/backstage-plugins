@@ -1,4 +1,4 @@
-import { DiscoveryApi } from '@backstage/core-plugin-api';
+import { DiscoveryApi, ConfigApi, IdentityApi} from '@backstage/core-plugin-api';
 import { ResponseError } from '@backstage/errors';
 import { JsonObject } from '@backstage/types';
 
@@ -21,12 +21,19 @@ import { OrchestratorApi } from './api';
 
 export interface OrchestratorClientOptions {
   discoveryApi: DiscoveryApi;
+  configApi: ConfigApi;
+  identityApi: IdentityApi;
 }
 export class OrchestratorClient implements OrchestratorApi {
   private readonly discoveryApi: DiscoveryApi;
+  private readonly configApi: ConfigApi;
+  private readonly identityApi: IdentityApi;
   private baseUrl: string | null = null;
   constructor(options: OrchestratorClientOptions) {
     this.discoveryApi = options.discoveryApi;
+    this.configApi = options.configApi;
+    this.identityApi = options.identityApi;
+    console.log("initialiing orchestrator client")
   }
 
   private async getBaseUrl(): Promise<string> {
@@ -90,16 +97,40 @@ export class OrchestratorClient implements OrchestratorApi {
 
   async listWorkflowOverviews(): Promise<WorkflowOverviewListResult> {
     const baseUrl = await this.getBaseUrl();
-    const res = await fetch(`${baseUrl}/workflows/overview`);
+    const { token: idToken } = await this.identityApi.getCredentials();
+    console.log("list workflow overviews");
+    console.log("idToken", idToken);
+    const res = await fetch(`${baseUrl}/workflows/overview`, {
+      headers: {'Content-Type': 'application/json', 
+      ...(idToken && { Authorization: `Bearer ${idToken}` })
+      }
+    });    
     if (!res.ok) {
       throw await ResponseError.fromResponse(res);
     }
     return res.json();
   }
 
+  private async clusterApiFetchCall(params?: string): Promise<any> {
+    const { token: idToken } = await this.identityApi.getCredentials();
+    const backendUrl = this.configApi.getString('backend.baseUrl');
+    const jsonResponse = await fetch(
+      `${backendUrl}/api/ocm/status${params || ''}`,
+      {
+        headers: {
+          'Content-Type': 'application/json',
+          ...(idToken && { Authorization: `Bearer ${idToken}` }),
+        },
+      },
+    );
+    return jsonResponse.json();
+  }
+
+
   async listInstances(): Promise<ProcessInstance[]> {
     const baseUrl = await this.getBaseUrl();
-    const res = await fetch(`${baseUrl}/instances`);
+    const { token: idToken } = await this.identityApi.getCredentials();
+    const res = await fetch(`${baseUrl}/instances`, {headers: {...(idToken && { Authorization: `Bearer ${idToken}` })}});
     if (!res.ok) {
       throw await ResponseError.fromResponse(res);
     }

@@ -13,7 +13,6 @@ import { JsonObject, JsonValue } from '@backstage/types';
 
 import { fullFormats } from 'ajv-formats/dist/formats';
 import express from 'express';
-import Router from 'express-promise-router';
 import {Request as HttpRequest} from 'express-serve-static-core'
 import { OpenAPIBackend, Request } from 'openapi-backend';
 import { http, log, Logger } from 'winston';
@@ -66,13 +65,16 @@ interface RouterApi {
 
 const authorize = async (request: HttpRequest, permission: BasicPermission, permissionsSvc: PermissionsService, httpAuth: HttpAuthService, identity: IdentityApi) => {
       
-  
+  const token = getBearerTokenFromAuthorizationHeader(
+    request.header('authorization'),
+  );
+  console.log("header", request.header('authorization'))
   const f = await httpAuth.credentials(request);  
-  console.log()
+  console.log("token", token)
   const decision = (
       // TODO credentials is missing because httpAuth.credentials doens't exists
     await permissionsSvc.authorize([{ permission: permission }], {
-      credentials: await httpAuth.credentials(request),
+      token
     }) 
     //await permissionsSvc.authorize([{ permission: permission }])
   )[0];
@@ -89,9 +91,13 @@ export async function createBackendRouter(
 
   const routerApi = await initRouterApi(publicServices.orchestratorService);
 
-  const router = Router();
-  
+  const router = express.Router();
+  const permissionIntegrationRouter = createPermissionIntegrationRouter({
+    permissions: orchestratorPermissions,
+  });
   router.use(express.json());
+  router.use(permissionIntegrationRouter);
+
   router.use('/workflows', express.text());
   router.use('/static', express.static(resolvePackagePath(pkg.name, 'static')));
 
@@ -215,12 +221,14 @@ function setupInternalRoutes(
 
   // v1
   router.get('/workflows/overview', async (req, res) => {
-    console.log("request user", req.user)
+    console.log("request user", req.headers.authorization)
     console.log("going into /workflows/overview");
+   
     const desicion = await authorize(req, orchestratorWorkflowInstanceReadPermission, permissionsSvc, httpAuth, identity);
     if (desicion.result === AuthorizeResult.DENY) {
         console.log("throwing not allowed exeption");
-        throw new NotAllowedError('Unauthorized');
+        res.status(403).json({message: "unauthorised"});        
+        return;
     }
     await routerApi.v1
       .getWorkflowsOverview()

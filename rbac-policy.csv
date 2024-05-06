@@ -1,7 +1,9 @@
 p, role:default/workflowViewer, orchestrator.workflowInstances.read, read, allow 
 p, role:default/workflowViewer, orchestrator.workflowInstance.read, read, allow 
+p, role:default/workflowRunner, orchestrator.workflow.execute, execute
 p, role:default/catalog, catalog-entity, read, allow
 g, user:default/guest, role:default/workflowViewer
 g, user:default/guest, role:default/catalog
 g, user:default/batzionb, role:default/workflowViewer
 g, user:default/batzionb, role:default/catalog
+g, user:default/batzionb, role:default/workflowRunner
