@@ -34,6 +34,13 @@ backend:
     store: memory
   # workingDirectory: /tmp # Use this to configure a working directory for the scaffolder, defaults to the OS temp-dir
 
+permission:
+  enabled: true
+  rbac:
+    pluginsWithPermissions:
+      - orchestrator
+      - orchestrator-backend
+    policies-csv-file: /home/rgolan/src/backstage-plugins/rbac-policy.csv
 integrations:
   github:
     - host: github.com
@@ -75,7 +82,15 @@ techdocs:
 
 auth:
   # see https://backstage.io/docs/auth/ to learn about auth providers
-  providers: {}
+  environment: development
+  providers:
+    github:
+      development:
+        clientId: "****"
+        clientSecret: "****"
+        signIn:
+          resolvers:
+            - resolver: usernameMatchingUserEntityName
 
 scaffolder:
   {}
@@ -86,7 +101,19 @@ catalog:
     entityFilename: catalog-info.yaml
     pullRequestBranchName: backstage-integration
   rules:
-    - allow: [Component, System, API, Resource, Location]
+    - allow:
+        [
+          Component,
+          System,
+          Group,
+          Resource,
+          Location,
+          Template,
+          API,
+          User,
+          Domain,
+        ]
+
   locations:
     # Local example data, file locations are relative to the backend process, typically `packages/backend`
     - type: file
@@ -103,6 +130,9 @@ catalog:
       target: ../../examples/org.yaml
       rules:
         - allow: [User, Group]
+
+    - type: file
+      target: /home/rgolan/src/parodos-dev/orchestrator-helm-chart/charts/orchestrator-k8s/locations/users.yaml
 
     ## Uncomment these lines to add more example data
     # - type: url

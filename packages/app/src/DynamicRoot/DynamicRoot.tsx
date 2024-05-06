@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useRef, useState } from 'react';
 
 import { createApp } from '@backstage/app-defaults';
 import { BackstageApp } from '@backstage/core-app-api';
-import { AnyApiFactory } from '@backstage/core-plugin-api';
+import { AnyApiFactory, githubAuthApiRef } from '@backstage/core-plugin-api';
 import { apiDocsPlugin } from '@backstage/plugin-api-docs';
 import { catalogPlugin } from '@backstage/plugin-catalog';
 import { catalogImportPlugin } from '@backstage/plugin-catalog-import';
@@ -19,6 +19,7 @@ import DynamicRootContext, {
   DynamicRootContextValue,
   RouteBinding,
 } from './DynamicRootContext';
+import { SignInPage } from '@backstage/core-components';
 
 const scalprumRoutes = dynamicModuleRegistry as DynamicModuleEntry[];
 
@@ -160,6 +161,26 @@ const DynamicRoot = ({
       AppProvider: app.current.getProvider(),
       AppRouter: app.current.getRouter(),
       dynamicRoutes: remoteComponents,
+      SignInPage: props => {
+        return (
+          <SignInPage
+            {...props}
+            title="Select a sign-in provider"
+            align="center"
+            providers={[
+              'guest',
+              {
+                id: 'github-auth-provider',
+                title: 'GitHub',
+                message: 'Sign in using GitHub',
+                apiRef: githubAuthApiRef,
+              },
+            ]}
+          />
+        );
+      },
+
+
     });
   }, [pluginStore, apis]);
 

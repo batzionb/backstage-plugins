@@ -69,6 +69,8 @@
     "@backstage/plugin-catalog-node": "^1.11.0",
     "@backstage/plugin-events-backend": "^0.3.3",
     "@backstage/plugin-events-node": "^0.3.2",
+    "@backstage/plugin-permission-common": "^0.7.13",
+    "@backstage/plugin-permission-common-node": "^0.7.27",
     "@backstage/plugin-scaffolder-backend": "^1.22.3",
     "@backstage/plugin-scaffolder-node": "^0.4.2",
     "@backstage/types": "^1.1.1",

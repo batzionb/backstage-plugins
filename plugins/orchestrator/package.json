@@ -40,6 +40,7 @@
   "dependencies": {
     "@backstage/core-components": "^0.14.3",
     "@backstage/core-plugin-api": "^1.9.1",
+    "@backstage/plugin-permission-react": "^0.4.22",
     "@backstage/errors": "^1.2.4",
     "@backstage/plugin-catalog": "^1.18.2",
     "@backstage/types": "^1.1.1",

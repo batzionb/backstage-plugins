@@ -126,6 +126,8 @@ export class DevModeService {
 
     const launcherArgs = [
       'run',
+      '--name',
+      'backstage-internal-sonataflow',
       '--add-host',
       'host.docker.internal:host-gateway',
     ];
@@ -134,7 +136,7 @@ export class DevModeService {
       launcherArgs.push(`--add-host`, `jira.test:${this.connection.jira.host}`);
     }
 
-    launcherArgs.push('--rm');
+    //launcherArgs.push('--rm');
     launcherArgs.push('-e', `QUARKUS_HTTP_PORT=${this.connection.port}`);
 
     launcherArgs.push('-p', `${this.connection.port}:${this.connection.port}`);

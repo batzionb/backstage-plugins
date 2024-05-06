@@ -1,4 +1,11 @@
-import { errorHandler, resolvePackagePath } from '@backstage/backend-common';
+import { errorHandler, resolvePackagePath, createLegacyAuthAdapters } from '@backstage/backend-common';
+import {
+  HttpAuthService,
+  IdentityService,
+  PermissionsService,
+} from '@backstage/backend-plugin-api';
+
+import { IdentityApi } from '@backstage/plugin-auth-node';
 import { PluginTaskScheduler } from '@backstage/backend-tasks';
 import { Config } from '@backstage/config';
 import { DiscoveryApi } from '@backstage/core-plugin-api';
@@ -7,9 +14,10 @@ import { JsonObject, JsonValue } from '@backstage/types';
 import { fullFormats } from 'ajv-formats/dist/formats';
 import express from 'express';
 import Router from 'express-promise-router';
+import {Request as HttpRequest} from 'express-serve-static-core'
 import { OpenAPIBackend, Request } from 'openapi-backend';
-import { Logger } from 'winston';
-
+import { http, log, Logger } from 'winston';
+import { getBearerTokenFromAuthorizationHeader } from '@backstage/plugin-auth-node';
 import {
   openApiDocument,
   QUERY_PARAM_ASSESSMENT_INSTANCE_ID,
@@ -17,6 +25,10 @@ import {
   QUERY_PARAM_INCLUDE_ASSESSMENT,
   QUERY_PARAM_INSTANCE_ID,
   WorkflowInputSchemaResponse,
+  orchestratorPermissions,
+  orchestratorWorkflowInstanceReadPermission,
+  orchestratorWorkflowInstancesReadPermission,
+
 } from '@janus-idp/backstage-plugin-orchestrator-common';
 
 import * as pkg from '../../package.json';
@@ -33,6 +45,12 @@ import { OrchestratorService } from './OrchestratorService';
 import { ScaffolderService } from './ScaffolderService';
 import { SonataFlowService } from './SonataFlowService';
 import { WorkflowCacheService } from './WorkflowCacheService';
+import { NotAllowedError } from '@backstage/errors';
+import {
+    AuthorizeResult,
+    BasicPermission,
+} from '@backstage/plugin-permission-common';
+import { createPermissionIntegrationRouter } from '@backstage/plugin-permission-node';
 
 interface PublicServices {
   jiraService: JiraService;
@@ -46,17 +64,46 @@ interface RouterApi {
   v2: V2;
 }
 
+const authorize = async (request: HttpRequest, permission: BasicPermission, permissionsSvc: PermissionsService, httpAuth: HttpAuthService, identity: IdentityApi) => {
+  console.log("http auth " + httpAuth);
+  console.log("http auth credentials " + httpAuth.credentials);
+  console.log("http auth issueUserCookie " + httpAuth.issueUserCookie);
+  const user = await identity.getIdentity({ request: request });
+  const author = user?.identity.userEntityRef;
+  console.log(` user ${user} author ${author}`);
+
+  const loggedInUser = getBearerTokenFromAuthorizationHeader(
+      request.header("authorization"),
+  );
+  console.log("logged in user " + loggedInUser);
+  const f = await httpAuth.credentials(request);
+  console.log("http cred req" + JSON.stringify(f));
+  const decision = (
+      // TODO credentials is missing because httpAuth.credentials doens't exists
+    await permissionsSvc.authorize([{ permission: permission }], {
+      credentials: await httpAuth.credentials(request),
+    }) 
+    //await permissionsSvc.authorize([{ permission: permission }])
+  )[0];
+
+  return decision;
+};
+
 export async function createBackendRouter(
   args: RouterArgs,
 ): Promise<express.Router> {
-  const { config, logger, discovery, catalogApi, urlReader, scheduler } = args;
+  const { config, logger, discovery, catalogApi, urlReader, scheduler, permissions, httpAuth, identity } = args;
 
   const publicServices = initPublicServices(logger, config, scheduler);
 
   const routerApi = await initRouterApi(publicServices.orchestratorService);
 
   const router = Router();
+  const permissionsIntegrationRouter = createPermissionIntegrationRouter({
+      permissions: orchestratorPermissions,
+  });
   router.use(express.json());
+  router.use(permissionsIntegrationRouter);
   router.use('/workflows', express.text());
   router.use('/static', express.static(resolvePackagePath(pkg.name, 'static')));
 
@@ -72,7 +119,7 @@ export async function createBackendRouter(
     urlReader,
   );
 
-  setupInternalRoutes(router, publicServices, routerApi);
+  setupInternalRoutes(router, publicServices, routerApi, permissions, httpAuth, identity);
   setupExternalRoutes(router, discovery, scaffolderService);
 
   router.use((req, res, next) => {
@@ -92,6 +139,7 @@ export async function createBackendRouter(
   router.use(errorHandler());
   return router;
 }
+
 
 function initPublicServices(
   logger: Logger,
@@ -172,9 +220,21 @@ function setupInternalRoutes(
   router: express.Router,
   services: PublicServices,
   routerApi: RouterApi,
+  permissionsSvc: PermissionsService, 
+  httpAuth: HttpAuthService,
+  identity: IdentityApi,
 ) {
+
+  console.log("########## - permissionsSvc " + permissionsSvc);
+  console.log("########## - credentials " + httpAuth.credentials);
   // v1
-  router.get('/workflows/overview', async (_c, res) => {
+  router.get('/workflows/overview', async (req, res) => {
+    console.log("going into /workflows/overview");
+    const desicion = await authorize(req, orchestratorWorkflowInstanceReadPermission, permissionsSvc, httpAuth, identity);
+    if (desicion.result === AuthorizeResult.DENY) {
+        console.log("throwing not allowed exeption");
+        throw new NotAllowedError('Unauthorized');
+    }
     await routerApi.v1
       .getWorkflowsOverview()
       .then(result => res.status(200).json(result))

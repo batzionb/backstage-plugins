@@ -4,6 +4,8 @@ import {
   createBackendPlugin,
 } from '@backstage/backend-plugin-api';
 import { catalogServiceRef } from '@backstage/plugin-catalog-node/alpha';
+import { DefaultIdentityClient } from '@backstage/plugin-auth-node';
+import { http } from 'winston';
 
 import { createRouter } from './routerWrapper';
 
@@ -18,6 +20,8 @@ export const orchestratorPlugin = createBackendPlugin({
         httpRouter: coreServices.httpRouter,
         urlReader: coreServices.urlReader,
         scheduler: coreServices.scheduler,
+        permissions: coreServices.permissions,
+        httpAuth: coreServices.httpAuth,
         catalogApi: catalogServiceRef,
       },
       async init({
@@ -28,8 +32,15 @@ export const orchestratorPlugin = createBackendPlugin({
         catalogApi,
         urlReader,
         scheduler,
+        permissions,
+        httpAuth,
       }) {
         const log = loggerToWinstonLogger(logger);
+        const identity = DefaultIdentityClient.create({
+            discovery: discovery,
+            issuer: await discovery.getExternalBaseUrl('auth'),
+          });
+        console.log("########## identity client " + identity);
         const router = await createRouter({
           config: config,
           logger: log,
@@ -37,6 +48,9 @@ export const orchestratorPlugin = createBackendPlugin({
           catalogApi: catalogApi,
           urlReader: urlReader,
           scheduler: scheduler,
+          permissions: permissions,
+          httpAuth: httpAuth,
+          identity: identity,
         });
         httpRouter.use(router);
       },

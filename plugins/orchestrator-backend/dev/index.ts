@@ -1,4 +1,4 @@
-import { createServiceBuilder, UrlReader } from '@backstage/backend-common';
+import { createServiceBuilder, ServerTokenManager, UrlReader } from '@backstage/backend-common';
 import { PluginTaskScheduler } from '@backstage/backend-tasks';
 import { CatalogApi } from '@backstage/catalog-client';
 import { Config } from '@backstage/config';
@@ -10,7 +10,8 @@ import { Logger } from 'winston';
 import { Server } from 'http';
 
 import { createRouter } from '../src/routerWrapper';
-
+import { coreServices } from '@backstage/backend-plugin-api';
+import { ServerPermissionClient } from '@backstage/plugin-permission-node';
 export interface ServerOptions {
   port: number;
   enableCors: boolean;
@@ -28,6 +29,11 @@ export async function startStandaloneServer(
 ): Promise<Server> {
   const logger = options.logger.child({ service: 'orchestrator-backend' });
   logger.debug('Starting application server...');
+
+  const permissions = ServerPermissionClient.fromConfig(options.config, {discovery: options.discovery, tokenManager: ServerTokenManager.noop() });
+
+  console.log("########## permissions " + permissions);
+  console.log("########## httpAuth" + coreServices.httpAuth);
   const router = await createRouter({
     logger: logger,
     config: options.config,
@@ -35,6 +41,8 @@ export async function startStandaloneServer(
     catalogApi: options.catalogApi,
     urlReader: options.urlReader,
     scheduler: options.scheduler,
+    permissions: permissions,
+    httpAuth: coreServices.httpAuth,
   });
 
   let service = createServiceBuilder(module)
