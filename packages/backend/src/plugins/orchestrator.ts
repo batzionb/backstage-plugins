@@ -1,3 +1,5 @@
+import { coreServices } from '@backstage/backend-plugin-api';
+
 import { Router } from 'express';
 
 import { createRouter } from '@janus-idp/backstage-plugin-orchestrator-backend';
@@ -14,5 +16,7 @@ export default async function createPlugin(
     catalogApi: env.catalogApi,
     urlReader: env.reader,
     scheduler: env.scheduler,
+    permissions: env.permissions,
+    identity: env.identity,
   });
 }

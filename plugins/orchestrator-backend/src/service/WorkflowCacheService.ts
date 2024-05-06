@@ -89,13 +89,7 @@ export class WorkflowCacheService {
         }),
       );
 
-      const workflowDefinitionIds = this.isEmpty()
-        ? 'empty cache'
-        : Array.from(this.definitionIdCache).join(', ');
 
-      this.logger.info(
-        `${this.TASK_ID} updated the workflow definition ID cache to: ${workflowDefinitionIds}`,
-      );
     } catch (error) {
       this.logger.error(`Error running ${this.TASK_ID}: ${error}`);
       return;

@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useRef, useState } from 'react';
 
 import { createApp } from '@backstage/app-defaults';
 import { BackstageApp } from '@backstage/core-app-api';
+import { SignInPage } from '@backstage/core-components';
 import { AnyApiFactory, githubAuthApiRef } from '@backstage/core-plugin-api';
 import { apiDocsPlugin } from '@backstage/plugin-api-docs';
 import { catalogPlugin } from '@backstage/plugin-catalog';
@@ -19,7 +20,6 @@ import DynamicRootContext, {
   DynamicRootContextValue,
   RouteBinding,
 } from './DynamicRootContext';
-import { SignInPage } from '@backstage/core-components';
 
 const scalprumRoutes = dynamicModuleRegistry as DynamicModuleEntry[];
 
@@ -155,32 +155,32 @@ const DynamicRoot = ({
             );
           });
         },
+        components: {
+          SignInPage: props => {
+            return (
+              <SignInPage
+                {...props}
+                title="Select a sign-in provider"
+                align="center"
+                providers={[
+                  'guest',
+                  {
+                    id: 'github-auth-provider',
+                    title: 'GitHub',
+                    message: 'Sign in using GitHub',
+                    apiRef: githubAuthApiRef,
+                  },
+                ]}
+              />
+            );
+          },
+        },
       });
     }
     setComponents({
       AppProvider: app.current.getProvider(),
       AppRouter: app.current.getRouter(),
       dynamicRoutes: remoteComponents,
-      SignInPage: props => {
-        return (
-          <SignInPage
-            {...props}
-            title="Select a sign-in provider"
-            align="center"
-            providers={[
-              'guest',
-              {
-                id: 'github-auth-provider',
-                title: 'GitHub',
-                message: 'Sign in using GitHub',
-                apiRef: githubAuthApiRef,
-              },
-            ]}
-          />
-        );
-      },
-
-
     });
   }, [pluginStore, apis]);
 

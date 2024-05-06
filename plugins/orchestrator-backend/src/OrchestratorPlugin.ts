@@ -40,7 +40,6 @@ export const orchestratorPlugin = createBackendPlugin({
             discovery: discovery,
             issuer: await discovery.getExternalBaseUrl('auth'),
           });
-        console.log("########## identity client " + identity);
         const router = await createRouter({
           config: config,
           logger: log,

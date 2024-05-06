@@ -1,0 +1,20 @@
+
+apiVersion: backstage.io/v1alpha1
+kind: User
+metadata:
+  name: guest
+  namespace: default
+spec:
+  profile:
+    displayName: Guest User [default installation on k8]
+  memberOf: []
+---
+apiVersion: backstage.io/v1alpha1
+kind: User
+metadata:
+  name: batzionb
+  namespace: default
+spec:
+  profile:
+    displayName: Bat-Zion Rotman
+  memberOf: []

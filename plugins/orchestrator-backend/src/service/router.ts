@@ -65,19 +65,10 @@ interface RouterApi {
 }
 
 const authorize = async (request: HttpRequest, permission: BasicPermission, permissionsSvc: PermissionsService, httpAuth: HttpAuthService, identity: IdentityApi) => {
-  console.log("http auth " + httpAuth);
-  console.log("http auth credentials " + httpAuth.credentials);
-  console.log("http auth issueUserCookie " + httpAuth.issueUserCookie);
-  const user = await identity.getIdentity({ request: request });
-  const author = user?.identity.userEntityRef;
-  console.log(` user ${user} author ${author}`);
-
-  const loggedInUser = getBearerTokenFromAuthorizationHeader(
-      request.header("authorization"),
-  );
-  console.log("logged in user " + loggedInUser);
-  const f = await httpAuth.credentials(request);
-  console.log("http cred req" + JSON.stringify(f));
+      
+  
+  const f = await httpAuth.credentials(request);  
+  console.log()
   const decision = (
       // TODO credentials is missing because httpAuth.credentials doens't exists
     await permissionsSvc.authorize([{ permission: permission }], {
@@ -99,11 +90,8 @@ export async function createBackendRouter(
   const routerApi = await initRouterApi(publicServices.orchestratorService);
 
   const router = Router();
-  const permissionsIntegrationRouter = createPermissionIntegrationRouter({
-      permissions: orchestratorPermissions,
-  });
+  
   router.use(express.json());
-  router.use(permissionsIntegrationRouter);
   router.use('/workflows', express.text());
   router.use('/static', express.static(resolvePackagePath(pkg.name, 'static')));
 
@@ -225,10 +213,9 @@ function setupInternalRoutes(
   identity: IdentityApi,
 ) {
 
-  console.log("########## - permissionsSvc " + permissionsSvc);
-  console.log("########## - credentials " + httpAuth.credentials);
   // v1
   router.get('/workflows/overview', async (req, res) => {
+    console.log("request user", req.user)
     console.log("going into /workflows/overview");
     const desicion = await authorize(req, orchestratorWorkflowInstanceReadPermission, permissionsSvc, httpAuth, identity);
     if (desicion.result === AuthorizeResult.DENY) {

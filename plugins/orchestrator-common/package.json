@@ -40,6 +40,7 @@
     "openapi:prettier:fix": "prettier --ignore-unknown --write ./src/auto-generated"
   },
   "dependencies": {
+    "@backstage/plugin-permission-common": "^0.7.13",
     "@backstage/types": "^1.1.1",
     "@severlessworkflow/sdk-typescript": "^3.0.3",
     "js-yaml": "^4.1.0",

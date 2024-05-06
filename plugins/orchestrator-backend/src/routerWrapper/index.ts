@@ -1,27 +1,37 @@
-import { ServerTokenManager, SingleHostDiscovery, UrlReader } from '@backstage/backend-common';
+import {
+  HostDiscovery,
+  tokenManagerServiceFactory,
+} from '@backstage/backend-app-api';
+import {
+  createLegacyAuthAdapters,
+  ServerTokenManager,
+  SingleHostDiscovery,
+  UrlReader,
+} from '@backstage/backend-common';
+import {
+  coreServices,
+  createBackendPlugin,
+  DiscoveryService,
+  HttpAuthService,
+  IdentityService,
+  PermissionsService,
+} from '@backstage/backend-plugin-api';
 import { PluginTaskScheduler } from '@backstage/backend-tasks';
 import { CatalogApi } from '@backstage/catalog-client';
 import { Config } from '@backstage/config';
 import { DiscoveryApi } from '@backstage/core-plugin-api';
 import {
-  coreServices,
-  createBackendPlugin,
-  HttpAuthService,
-  IdentityService,
-  PermissionsService,
-} from '@backstage/backend-plugin-api';
-import { IdentityApi } from '@backstage/plugin-auth-node';
+  DefaultIdentityClient,
+  IdentityApi,
+} from '@backstage/plugin-auth-node';
+import { ServerPermissionClient } from '@backstage/plugin-permission-node';
 
 import express from 'express';
 import { config, Logger } from 'winston';
 
 import { DevModeService } from '../service/DevModeService';
 import { createBackendRouter } from '../service/router';
-import {ServerPermissionClient } from '@backstage/plugin-permission-node'
-import { HostDiscovery, tokenManagerServiceFactory } from '@backstage/backend-app-api';
-import { DiscoveryService } from '@backstage/backend-plugin-api';
-import { createLegacyAuthAdapters } from '@backstage/backend-common';
-import {DefaultIdentityClient } from '@backstage/plugin-auth-node';
+
 export interface RouterArgs {
   config: Config;
   logger: Logger;
@@ -49,19 +59,22 @@ export async function createRouter(args: RouterArgs): Promise<express.Router> {
       args.logger.error('SonataFlow is not up. Check your configuration.');
     }
   }
-  const tokenManager = ServerTokenManager.fromConfig(args.config, {logger: args.logger});
-  const permissions = ServerPermissionClient.fromConfig(args.config, {discovery: args.discovery, tokenManager});
-  const { httpAuth }  =  createLegacyAuthAdapters({httpAuth: args.httpAuth, discovery: args.discovery, tokenManager: tokenManager, });
-  console.log("########## permission            - " + permissions);
-  console.log("########## coreServices.httpAuth - " + coreServices.httpAuth);
-  console.log("########## httpAuth              - " + httpAuth);
-  console.log("########## args.discovery        - " + args.discovery);
-  console.log("########## tokenManager          - " + tokenManager);
+  const tokenManager = ServerTokenManager.fromConfig(args.config, {
+    logger: args.logger,
+  });
+  const permissions = ServerPermissionClient.fromConfig(args.config, {
+    discovery: args.discovery,
+    tokenManager,
+  });
+  const { httpAuth } = createLegacyAuthAdapters({
+    httpAuth: args.httpAuth,
+    discovery: args.discovery,
+    tokenManager: tokenManager,
+  });
   const identity1 = DefaultIdentityClient.create({
-      discovery: args.discovery,
-      issuer: await args.discovery.getExternalBaseUrl('auth'),
-    });
-  console.log("########## identity1             - " + identity1);
+    discovery: args.discovery,
+    issuer: await args.discovery.getExternalBaseUrl('auth'),
+  });
 
   return await createBackendRouter({
     config: args.config,

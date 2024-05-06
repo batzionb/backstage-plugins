@@ -54,13 +54,15 @@ function makeCreateEnv(config: Config) {
   const identity = DefaultIdentityClient.create({
     discovery,
   });
+
+  
   const permissions = ServerPermissionClient.fromConfig(config, {
     discovery,
     tokenManager,
   });
 
   const eventBroker = new DefaultEventBroker(root.child({ type: 'plugin' }));
-
+  
   root.info(`Created UrlReader ${reader}`);
 
   return (plugin: string): PluginEnvironment => {
@@ -103,6 +105,7 @@ async function main() {
   const orchestratorEnv = useHotMemoize(module, () =>
     createEnv('orchestrator'),
   );
+  
 
   const apiRouter = Router();
   apiRouter.use('/catalog', await catalog(catalogEnv));
