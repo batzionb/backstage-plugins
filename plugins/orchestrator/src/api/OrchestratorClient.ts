@@ -136,6 +136,19 @@ export class OrchestratorClient implements OrchestratorApi {
     }).then(r => r.json());
   }
 
+  async validateDynamic(args: {
+    validatePluginId: string;
+    inputData: JsonObject;
+  }): Promise<{ isValid: boolean; message: string }> {
+    const baseUrl = await this.discoveryApi.getBaseUrl(args.validatePluginId);
+    const urlToFetch = `${baseUrl}/validate`;
+    return await this.fetcher(urlToFetch, {
+      method: 'POST',
+      body: JSON.stringify(args.inputData),
+      headers: { 'Content-Type': 'application/json' },
+    }).then(r => r.json());
+  }
+
   /** fetcher is convenience fetch wrapper that includes authentication
    * and other necessary headers **/
   private async fetcher(

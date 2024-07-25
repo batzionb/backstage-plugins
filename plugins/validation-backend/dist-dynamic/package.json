@@ -1,0 +1,44 @@
+{
+  "name": "backstage-plugin-validation-backend-dynamic",
+  "version": "0.1.0",
+  "main": "dist/index.cjs.js",
+  "types": "dist/index.d.ts",
+  "license": "Apache-2.0",
+  "private": true,
+  "publishConfig": {
+    "access": "public",
+    "main": "dist/index.cjs.js",
+    "types": "dist/index.d.ts"
+  },
+  "backstage": {
+    "role": "backend-plugin"
+  },
+  "scripts": {},
+  "dependencies": {
+    "@types/express": "*",
+    "express": "^4.17.1",
+    "express-promise-router": "^4.1.0",
+    "winston": "^3.2.1",
+    "node-fetch": "^2.6.7",
+    "yn": "^4.0.0"
+  },
+  "devDependencies": {},
+  "files": [
+    "dist"
+  ],
+  "bundleDependencies": true,
+  "peerDependencies": {
+    "@backstage/backend-common": "^0.21.7",
+    "@backstage/backend-defaults": "^0.2.17",
+    "@backstage/backend-plugin-api": "^0.6.17",
+    "@backstage/config": "^1.2.0"
+  },
+  "overrides": {
+    "@aws-sdk/util-utf8-browser": {
+      "@smithy/util-utf8": "^2.0.0"
+    }
+  },
+  "resolutions": {
+    "@aws-sdk/util-utf8-browser": "npm:@smithy/util-utf8@~2"
+  }
+}

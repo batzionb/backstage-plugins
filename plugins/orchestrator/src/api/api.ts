@@ -45,6 +45,11 @@ export interface OrchestratorApi {
   listWorkflowOverviews(): Promise<WorkflowOverviewListResult>;
 
   listInstances(): Promise<ProcessInstance[]>;
+
+  validateDynamic(args: {
+    validatePluginId: string;
+    inputData: JsonObject;
+  }): Promise<{ isValid: boolean; message: string }>;
 }
 
 export const orchestratorApiRef = createApiRef<OrchestratorApi>({
