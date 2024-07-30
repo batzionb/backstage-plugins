@@ -14,6 +14,8 @@ import Grid from '@mui/material/Grid';
 import {
   capitalize,
   ellipsis,
+  PaginationInfoDTO,
+  PaginationInfoDTOOrderDirectionEnum,
   ProcessInstanceState,
   ProcessInstanceStatusDTO,
 } from '@janus-idp/backstage-plugin-orchestrator-common';
@@ -49,14 +51,26 @@ export const WorkflowRunsTabContent = () => {
     Selector.AllItems,
   );
 
+  const curPaginationInfo = React.useRef<PaginationInfoDTO>({
+    page: 0,
+    pageSize: DEFAULT_TABLE_PAGE_SIZE,
+    orderBy: 'started',
+    orderDirection: PaginationInfoDTOOrderDirectionEnum.Desc,
+  });
+
   const fetchInstances = React.useCallback(async () => {
-    const instances = await orchestratorApi.listInstances();
+    const instances = await orchestratorApi.listInstances(
+      curPaginationInfo.current,
+    );
     const clonedData: WorkflowRunDetail[] =
       instances.data.items?.map(mapProcessInstanceToDetails) || [];
-    return clonedData;
+    return {
+      instances: clonedData,
+      paginationInfo: instances.data.paginationInfo,
+    };
   }, [orchestratorApi]);
 
-  const { loading, error, value } = usePolling(fetchInstances);
+  const { loading, error, value, restart } = usePolling(fetchInstances);
 
   const columns = React.useMemo(
     (): TableColumn<WorkflowRunDetail>[] => [
@@ -98,7 +112,7 @@ export const WorkflowRunsTabContent = () => {
 
   const filteredData = React.useMemo(
     () =>
-      (value ?? []).filter(
+      (value?.instances ?? []).filter(
         (row: WorkflowRunDetail) =>
           statusSelectorValue === Selector.AllItems ||
           row.status === statusSelectorValue,
@@ -121,8 +135,8 @@ export const WorkflowRunsTabContent = () => {
     ),
     [statusSelectorValue, statuses],
   );
-  const paging = (value?.length || 0) > DEFAULT_TABLE_PAGE_SIZE; // this behavior fits the backstage catalog table behavior https://github.com/backstage/backstage/blob/v1.14.0/plugins/catalog/src/components/CatalogTable/CatalogTable.tsx#L228
-
+  const paging =
+    (value?.paginationInfo?.totalCount || 0) > DEFAULT_TABLE_PAGE_SIZE; // this behavior fits the backstage catalog table behavior https://github.com/backstage/backstage/blob/v1.14.0/plugins/catalog/src/components/CatalogTable/CatalogTable.tsx#L228
   return error ? (
     <ErrorPanel error={error} />
   ) : (
@@ -133,10 +147,23 @@ export const WorkflowRunsTabContent = () => {
           paging,
           search: true,
           pageSize: DEFAULT_TABLE_PAGE_SIZE,
+          paginationType: 'normal',
+          paginationPosition: 'bottom',
         }}
         isLoading={loading}
         columns={columns}
         data={filteredData}
+        onPageChange={(page: number, pageSize: number) => {
+          curPaginationInfo.current = { page, pageSize };
+          restart();
+        }}
+        totalCount={value?.paginationInfo?.totalCount}
+        page={value?.paginationInfo?.page}
+        onOrderChange={(orderBy: number, orderDirection: 'asc' | 'desc') => {
+          curPaginationInfo.current.orderBy = columns[orderBy].field;
+          curPaginationInfo.current.orderDirection =
+            orderDirection as PaginationInfoDTOOrderDirectionEnum;
+        }}
       />
     </InfoCard>
   );

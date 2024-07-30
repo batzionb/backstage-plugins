@@ -18,7 +18,7 @@ export function buildPagination(req: Request): Pagination {
   return {
     offset: isNaN(req.query.page as any)
       ? DEFAULT_PAGE_NUMBER
-      : Number(req.query.page),
+      : Number(req.query.page) * Number(req.query.pageSize),
     limit: isNaN(req.query.pageSize as any)
       ? DEFAULT_PAGE_SIZE
       : Number(req.query.pageSize),

@@ -220,8 +220,8 @@ export const WorkflowInstancePage = ({
                       <Button
                         variant="contained"
                         color="primary"
-                        disabled={!permittedToExecute.allowed || !canRerun}
-                        onClick={canRerun ? handleRerun : undefined}
+                        disabled={!permittedToExecute.allowed || !canAbort}
+                        onClick={canAbort ? handleRerun : undefined}
                       >
                         Retrigger
                       </Button>
