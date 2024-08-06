@@ -1,6 +1,8 @@
 import { createApiRef } from '@backstage/core-plugin-api';
 import { JsonObject } from '@backstage/types';
 
+import { RegistryWidgetsType } from '@rjsf/utils';
+
 import {
   AssessedProcessInstance,
   ProcessInstance,
@@ -49,4 +51,24 @@ export interface OrchestratorApi {
 
 export const orchestratorApiRef = createApiRef<OrchestratorApi>({
   id: 'plugin.orchestrator.api',
+});
+
+export interface TestApi {
+  test(): void;
+  getCustomWidgets(): RegistryWidgetsType<any, any, any>;
+}
+
+class DefaultTestAPi implements TestApi {
+  test() {
+    console.log('no override for plugin');
+  }
+  getCustomWidgets(): RegistryWidgetsType<any, any, any> {
+    return {};
+  }
+}
+
+export const defaultTestApi = new DefaultTestAPi();
+
+export const testApiRef = createApiRef<TestApi>({
+  id: 'plugin.orchestrator.test',
 });

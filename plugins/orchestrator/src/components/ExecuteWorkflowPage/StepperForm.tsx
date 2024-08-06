@@ -1,6 +1,7 @@
 import React from 'react';
 
 import { Content, StructuredMetadataTable } from '@backstage/core-components';
+import { useApiHolder } from '@backstage/core-plugin-api';
 import { JsonObject } from '@backstage/types';
 
 import Box from '@mui/material/Box';
@@ -13,12 +14,29 @@ import Stepper from '@mui/material/Stepper';
 import Typography from '@mui/material/Typography';
 import { FormProps } from '@rjsf/core';
 import Form from '@rjsf/mui';
-import { RJSFSchema, UiSchema } from '@rjsf/utils';
 import validator from '@rjsf/validator-ajv8';
 
 import { WorkflowInputSchemaStep } from '@janus-idp/backstage-plugin-orchestrator-common';
 
+import { defaultTestApi, testApiRef } from '../../api/api';
 import SubmitButton from '../SubmitButton';
+
+const schema = {
+  title: 'A registration form',
+  type: 'object',
+  required: ['firstName', 'lastName'],
+  properties: {
+    firstName: { type: 'string', title: 'First name', default: 'Chuck' },
+    lastName: { type: 'string', title: 'Last name' },
+    color: { type: 'string', title: 'Favorite color', default: '#ff0000' },
+  },
+};
+
+const uiSchema = {
+  color: {
+    'ui:widget': 'color1',
+  },
+};
 
 const getCombinedData = (
   steps: WorkflowInputSchemaStep[],
@@ -90,26 +108,17 @@ const FormWrapper = ({
 }: Pick<FormProps<JsonObject>, 'onSubmit' | 'children'> & {
   step: WorkflowInputSchemaStep;
 }) => {
-  const firstKey = Object.keys(step.schema.properties ?? {})[0];
-  const uiSchema = React.useMemo(() => {
-    const res: UiSchema<any, RJSFSchema, any> = firstKey
-      ? { [firstKey]: { 'ui:autofocus': 'true' } }
-      : {};
-    for (const key of step.readonlyKeys) {
-      res[key] = { 'ui:disabled': 'true' };
-    }
-    return res;
-  }, [firstKey, step.readonlyKeys]);
-
+  const testApi = useApiHolder().get(testApiRef) || defaultTestApi;
   return (
     <Form
       validator={validator}
       showErrorList={false}
       noHtml5Validate
       formData={step.data}
-      schema={{ ...step.schema, title: '' }} // title is in step
+      schema={schema}
       onSubmit={onSubmit}
       uiSchema={uiSchema}
+      widgets={testApi.getCustomWidgets()}
     >
       {children}
     </Form>

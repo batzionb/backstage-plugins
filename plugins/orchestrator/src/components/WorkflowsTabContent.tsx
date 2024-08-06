@@ -5,19 +5,23 @@ import {
   Progress,
   ResponseErrorPanel,
 } from '@backstage/core-components';
-import { useApi } from '@backstage/core-plugin-api';
+import { useApi, useApiHolder } from '@backstage/core-plugin-api';
 
 import Grid from '@mui/material/Grid';
 
 import { WorkflowOverview } from '@janus-idp/backstage-plugin-orchestrator-common';
 
-import { orchestratorApiRef } from '../api';
+import { orchestratorApiRef, testApiRef } from '../api';
+import { defaultTestApi } from '../api/api';
 import usePolling from '../hooks/usePolling';
 import { WorkflowsTable } from './WorkflowsTable';
 
 export const WorkflowsTabContent = () => {
   const orchestratorApi = useApi(orchestratorApiRef);
-
+  const testApi = useApiHolder().get(testApiRef) || defaultTestApi;
+  React.useEffect(() => {
+    testApi.test();
+  }, []);
   const fetchWorkflowOverviews = useCallback(async () => {
     const data = await orchestratorApi.listWorkflowOverviews();
     return data.items;
