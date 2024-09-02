@@ -17,13 +17,13 @@ import {
 } from '@material-ui/core';
 import { FormProps, withTheme } from '@rjsf/core';
 import { Theme as MuiTheme } from '@rjsf/material-ui';
-import { RJSFSchema, UiSchema } from '@rjsf/utils';
 import validator from '@rjsf/validator-ajv8';
 
 import { WorkflowInputSchemaStep } from '@janus-idp/backstage-plugin-orchestrator-common';
 import { orchestratorFormApiRef } from '@janus-idp/backstage-plugin-orchestrator-form-api';
 
 import { defaultFormExtensionsApi } from '../DefaultFormApi';
+import extractUiSchema from '../extractUiSchema';
 import SubmitButton from './SubmitButton';
 
 const Form = withTheme(MuiTheme);
@@ -119,17 +119,10 @@ const FormWrapper = ({
   const formApi =
     useApiHolder().get(orchestratorFormApiRef) || defaultFormExtensionsApi;
   const withFormExtensions = formApi.getFormDecorator();
-  const firstKey = Object.keys(step.schema.properties ?? {})[0];
-  const uiSchema = React.useMemo(() => {
-    const res: UiSchema<any, RJSFSchema, any> = firstKey
-      ? { [firstKey]: { 'ui:autofocus': 'true' } }
-      : {};
-    for (const key of step.readonlyKeys) {
-      res[key] = { 'ui:disabled': 'true' };
-    }
-    return res;
-  }, [firstKey, step.readonlyKeys]);
-
+  const uiSchema = React.useMemo(
+    () => extractUiSchema(step.schema),
+    [step.schema],
+  );
   const schema = { ...step.schema, title: '' }; // the title is in the step
 
   const FormComponent = (props: Partial<FormProps>) => {

@@ -45,6 +45,7 @@ backend.add(
 
 // permission plugin
 backend.add(import('@janus-idp/backstage-plugin-rbac-backend'));
+backend.add(import('@janus-idp/backstage-plugin-orchestrator-backend/alpha'));
 
 // search plugin
 backend.add(import('@backstage/plugin-search-backend/alpha'));

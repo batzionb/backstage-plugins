@@ -34,6 +34,8 @@ import { UserSettingsPage } from '@backstage/plugin-user-settings';
 
 import { getThemes } from '@redhat-developer/red-hat-developer-hub-theme';
 
+import { OrchestratorPage } from '@janus-idp/backstage-plugin-orchestrator';
+
 import { apis } from './apis';
 import { entityPage } from './components/catalog/EntityPage';
 import { Root } from './components/Root';
@@ -85,6 +87,7 @@ const routes = (
     </Route>
     <Route path="/create" element={<ScaffolderPage />} />
     <Route path="/api-docs" element={<ApiExplorerPage />} />
+    <Route path="/orchestrator" element={<OrchestratorPage />} />
     <Route
       path="/catalog-import"
       element={
