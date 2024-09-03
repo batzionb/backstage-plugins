@@ -188,17 +188,11 @@ export class V1 {
       throw new Error(`Couldn't update instance input data for ${instanceId}`);
     }
 
-    const isRetriggerInstanceInErrorOk =
-      await this.orchestratorService.retriggerInstanceInError({
-        definitionId: instance.processId,
-        instanceId,
-        serviceUrl: instance.serviceUrl,
-        cacheHandler: 'throw',
-      });
-
-    if (!isRetriggerInstanceInErrorOk) {
-      throw new Error(`Couldn't retrigger instance in error for ${instanceId}`);
-    }
+    await this.orchestratorService.retriggerInstanceInError({
+      definitionId: instance.processId,
+      instanceId,
+      serviceUrl: instance.serviceUrl,
+    });
 
     return { id: instanceId };
   }
