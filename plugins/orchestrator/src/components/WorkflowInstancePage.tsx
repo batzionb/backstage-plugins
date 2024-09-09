@@ -99,7 +99,12 @@ export const WorkflowInstancePage = ({
     permission: orchestratorWorkflowInstanceAbortPermission,
   });
 
+  const test = React.useMemo(() => {
+    console.log("there was a mutation");
+  }, [instanceId, orchestratorApi, queryInstanceId]);
+
   const fetchInstance = React.useCallback(async () => {
+    console.log("reloading");
     if (!instanceId && !queryInstanceId) {
       return undefined;
     }
@@ -107,6 +112,7 @@ export const WorkflowInstancePage = ({
       instanceId ?? queryInstanceId,
       true,
     );
+    console.log("done reloading");
     return res.data;
   }, [instanceId, orchestratorApi, queryInstanceId]);
 
@@ -122,6 +128,7 @@ export const WorkflowInstancePage = ({
         !curValue.instance.status),
   );
 
+  console.log("workflowinstancepage loading", loading);
   const isErrorState =
     value?.instance.status === ProcessInstanceStatusDTO.Error;
 
@@ -143,7 +150,9 @@ export const WorkflowInstancePage = ({
   const handleAbort = React.useCallback(async () => {
     if (value) {
       try {
+        console.log("aborting");
         await orchestratorApi.abortWorkflowInstance(value.instance.id);
+        console.log("done aborting");
         restart();
       } catch (e) {
         setAbortWorkflowInstanceErrorMsg(`${(e as Error).message}`);

@@ -12,20 +12,22 @@ const usePolling = <T>(
   maxErrorRetryCount: number = 3,
 ) => {
   const config = useSWRConfig();
-
+  console.log("swr config",);
   const prevFn = React.useRef(fn);
   const uniqueKey = React.useMemo<string>(() => {
     return uuid.v4();
   }, []);
 
+  console.log({uniqueKey});
   const [error, setError] = React.useState();
   const isInitalLoad = React.useRef(true);
 
   const { data, isLoading } = useSwr<T>(uniqueKey, fn, {
-    refreshInterval: (value_: T | undefined) => {
-      return !continueRefresh || continueRefresh(value_) ? delayMs : 0;
-    },
+    // refreshInterval: (value_: T | undefined) => {
+    //   return !continueRefresh || continueRefresh(value_) ? delayMs : 0;
+    // },
     shouldRetryOnError: true,
+    revalidateOnFocus: false,
     onErrorRetry: (curError, _key, _config, revalidate, { retryCount }) => {
       // requires custom behavior, retryErrorCount option doesn't support hiding the error before reaching the maximum
       if (isInitalLoad.current || retryCount >= maxErrorRetryCount) {
@@ -56,7 +58,7 @@ const usePolling = <T>(
     return () => config.cache.delete(uniqueKey);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
+  console.log("polling", isLoading);
   return {
     value: data,
     error,
