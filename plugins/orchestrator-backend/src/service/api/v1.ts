@@ -156,47 +156,6 @@ export class V1 {
     });
   }
 
-  public async retriggerInstanceInError(
-    instanceId: string,
-    inputData: ProcessInstanceVariables,
-  ): Promise<WorkflowExecutionResponse> {
-    const instance = await this.orchestratorService.fetchInstance({
-      instanceId,
-      cacheHandler: 'throw',
-    });
-
-    if (!instance?.serviceUrl) {
-      throw new Error(`Couldn't fetch process instance ${instanceId}`);
-    }
-
-    if (instance.state !== 'ERROR') {
-      throw new Error(
-        `Can't retrigger an instance on ${instance.state} state.`,
-      );
-    }
-
-    const isUpdateInstanceInputDataOk =
-      await this.orchestratorService.updateInstanceInputData({
-        definitionId: instance.processId,
-        instanceId,
-        inputData,
-        serviceUrl: instance.serviceUrl,
-        cacheHandler: 'throw',
-      });
-
-    if (!isUpdateInstanceInputDataOk) {
-      throw new Error(`Couldn't update instance input data for ${instanceId}`);
-    }
-
-    await this.orchestratorService.retriggerInstanceInError({
-      definitionId: instance.processId,
-      instanceId,
-      serviceUrl: instance.serviceUrl,
-    });
-
-    return { id: instanceId };
-  }
-
   public extractQueryParam(
     req: express.Request,
     key: string,
