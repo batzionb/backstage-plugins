@@ -935,6 +935,16 @@ ul.nav-tabs {
     }
   }
 };
+    defs["InputSchemaResponseDTO"] = {
+  "properties" : {
+    "inputSchema" : {
+      "type" : "object"
+    },
+    "data" : {
+      "type" : "object"
+    }
+  }
+};
     defs["NodeInstanceDTO"] = {
   "required" : [ "id" ],
   "properties" : {
@@ -3588,7 +3598,7 @@ public class DefaultApiExample {
         String instanceId = instanceId_example; // String | ID of instance
 
         try {
-            Object result = apiInstance.getWorkflowInputSchemaById(workflowId, instanceId);
+            InputSchemaResponseDTO result = apiInstance.getWorkflowInputSchemaById(workflowId, instanceId);
             System.out.println(result);
         } catch (ApiException e) {
             System.err.println("Exception when calling DefaultApi#getWorkflowInputSchemaById");
@@ -3627,7 +3637,7 @@ public class DefaultApiExample {
         String instanceId = instanceId_example; // String | ID of instance
 
         try {
-            Object result = apiInstance.getWorkflowInputSchemaById(workflowId, instanceId);
+            InputSchemaResponseDTO result = apiInstance.getWorkflowInputSchemaById(workflowId, instanceId);
             System.out.println(result);
         } catch (ApiException e) {
             System.err.println("Exception when calling DefaultApi#getWorkflowInputSchemaById");
@@ -3650,7 +3660,7 @@ String *instanceId = instanceId_example; // ID of instance (optional) (default t
 
 [apiInstance getWorkflowInputSchemaByIdWith:workflowId
     instanceId:instanceId
-              completionHandler: ^(Object output, NSError* error) {
+              completionHandler: ^(InputSchemaResponseDTO output, NSError* error) {
     if (output) {
         NSLog(@"%@", output);
     }
@@ -3705,7 +3715,7 @@ namespace Example
             var instanceId = instanceId_example;  // String | ID of instance (optional)  (default to null)
 
             try {
-                Object result = apiInstance.getWorkflowInputSchemaById(workflowId, instanceId);
+                InputSchemaResponseDTO result = apiInstance.getWorkflowInputSchemaById(workflowId, instanceId);
                 Debug.WriteLine(result);
             } catch (Exception e) {
                 Debug.Print("Exception when calling DefaultApi.getWorkflowInputSchemaById: " + e.Message );

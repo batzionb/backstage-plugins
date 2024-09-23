@@ -34,7 +34,8 @@
     "@backstage/types": "^1.1.1",
     "@janus-idp/backstage-plugin-orchestrator-common": "1.17.3",
     "@janus-idp/backstage-plugin-orchestrator-form-api": "1.1.0",
-    "json-schema": "^0.4.0"
+    "json-schema": "^0.4.0",
+    "json-schema-library": "^10.0.0-rc2"
   },
   "peerDependencies": {
     "@material-ui/core": "^4.12.4",

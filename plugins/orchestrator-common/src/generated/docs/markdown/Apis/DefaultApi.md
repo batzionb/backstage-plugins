@@ -151,7 +151,7 @@ No authorization required
 
 <a name="getWorkflowInputSchemaById"></a>
 # **getWorkflowInputSchemaById**
-> Object getWorkflowInputSchemaById(workflowId, instanceId)
+> InputSchemaResponseDTO getWorkflowInputSchemaById(workflowId, instanceId)
 
 
 
@@ -166,7 +166,7 @@ No authorization required
 
 ### Return type
 
-**Object**
+[**InputSchemaResponseDTO**](../Models/InputSchemaResponseDTO.md)
 
 ### Authorization
 

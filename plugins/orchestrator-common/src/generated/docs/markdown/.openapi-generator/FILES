@@ -7,6 +7,7 @@ Models/FilterInfo.md
 Models/FilterValue.md
 Models/GetInstancesRequestParams.md
 Models/GetOverviewsRequestParams.md
+Models/InputSchemaResponseDTO.md
 Models/NodeInstanceDTO.md
 Models/Operator.md
 Models/PaginationInfoDTO.md

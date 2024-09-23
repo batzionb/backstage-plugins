@@ -16,11 +16,11 @@ import {
 import { JsonObject } from '@backstage/types';
 
 import { Grid } from '@material-ui/core';
+import { JSONSchema7 } from 'json-schema';
 
 import {
   QUERY_PARAM_ASSESSMENT_INSTANCE_ID,
   QUERY_PARAM_INSTANCE_ID,
-  WorkflowInputSchemaResponse,
 } from '@janus-idp/backstage-plugin-orchestrator-common';
 import { OrchestratorForm } from '@janus-idp/backstage-plugin-orchestrator-form-react';
 
@@ -45,29 +45,29 @@ export const ExecuteWorkflowPage = () => {
   const navigate = useNavigate();
   const instanceLink = useRouteRef(workflowInstanceRouteRef);
   const {
-    value: schemaResponse,
+    value: schema,
     loading,
     error: responseError,
-  } = useAsync(
-    async (): Promise<WorkflowInputSchemaResponse> =>
-      await orchestratorApi.getWorkflowDataInputSchema({
-        workflowId,
-        instanceId,
-        assessmentInstanceId,
-      }),
-    [orchestratorApi, workflowId],
-  );
+  } = useAsync(async (): Promise<JSONSchema7 | undefined> => {
+    const res = await orchestratorApi.getWorkflowDataInputSchema(
+      workflowId,
+      instanceId,
+    );
+    return res.data.inputSchema;
+  }, [orchestratorApi, workflowId]);
+
+  const {
+    value: workflowName,
+    loading: workflowNameLoading,
+    error: workflowNameError,
+  } = useAsync(async (): Promise<string> => {
+    const res = await orchestratorApi.getWorkflowOverview(workflowId);
+    return res.data.name || '';
+  }, [orchestratorApi, workflowId]);
 
   const handleExecute = useCallback(
-    async (getParameters: () => JsonObject) => {
+    async (parameters: JsonObject) => {
       setUpdateError(undefined);
-      let parameters: JsonObject = {};
-      try {
-        parameters = getParameters();
-      } catch (err) {
-        setUpdateError(getErrorObject(err));
-        return;
-      }
       try {
         setIsExecuting(true);
         const response = await orchestratorApi.executeWorkflow({
@@ -77,6 +77,7 @@ export const ExecuteWorkflowPage = () => {
         });
         navigate(instanceLink({ instanceId: response.data.id }));
       } catch (err) {
+        console.log({ err });
         setUpdateError(getErrorObject(err));
       } finally {
         setIsExecuting(false);
@@ -85,24 +86,17 @@ export const ExecuteWorkflowPage = () => {
     [orchestratorApi, workflowId, navigate, instanceLink, assessmentInstanceId],
   );
 
-  const onReset = useCallback(() => {
+  const handleReset = useCallback(() => {
     setUpdateError(undefined);
   }, [setUpdateError]);
 
+  const error = responseError || workflowNameError;
   let pageContent;
 
-  if (loading) {
+  if (loading || workflowNameLoading) {
     pageContent = <Progress />;
-  } else if (responseError) {
-    pageContent = <ResponseErrorPanel error={responseError} />;
-  } else if (!schemaResponse) {
-    pageContent = (
-      <ResponseErrorPanel
-        error={
-          new Error('Request for data input schema returned an empty response')
-        }
-      />
-    );
+  } else if (error) {
+    pageContent = <ResponseErrorPanel error={error} />;
   } else {
     pageContent = (
       <Grid container spacing={2} direction="column" wrap="nowrap">
@@ -111,26 +105,14 @@ export const ExecuteWorkflowPage = () => {
             <ResponseErrorPanel error={updateError} />
           </Grid>
         )}
-        {schemaResponse.schemaParseError && (
-          <Grid item>
-            <ResponseErrorPanel
-              error={
-                new Error(
-                  `Failed to parse schema: ${schemaResponse.schemaParseError}`,
-                )
-              }
-            />
-          </Grid>
-        )}
         <Grid item>
           <InfoCard title="Run workflow">
-            {schemaResponse.schemaSteps.length > 0 ? (
+            {!!schema ? (
               <OrchestratorForm
-                steps={schemaResponse.schemaSteps}
-                isComposedSchema={schemaResponse.isComposedSchema}
+                schema={schema}
                 handleExecute={handleExecute}
                 isExecuting={isExecuting}
-                onReset={onReset}
+                handleReset={handleReset}
               />
             ) : (
               <JsonTextAreaForm
@@ -146,8 +128,8 @@ export const ExecuteWorkflowPage = () => {
 
   return (
     <BaseOrchestratorPage
-      noPadding={loading}
-      title={schemaResponse?.definition.name ?? workflowId}
+      noPadding={workflowNameLoading}
+      title={workflowName}
       type="Workflows"
       typeLink="/orchestrator"
     >

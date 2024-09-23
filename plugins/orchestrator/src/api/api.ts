@@ -2,16 +2,17 @@ import { createApiRef } from '@backstage/core-plugin-api';
 import { JsonObject } from '@backstage/types';
 
 import { AxiosResponse } from 'axios';
+import { JSONSchema7 } from 'json-schema';
 
 import {
   AssessedProcessInstanceDTO,
   ExecuteWorkflowResponseDTO,
   FilterInfo,
+  InputSchemaResponseDTO,
   PaginationInfoDTO,
   ProcessInstanceListResultDTO,
   WorkflowDefinition,
   WorkflowExecutionResponse,
-  WorkflowInputSchemaResponse,
   WorkflowOverviewDTO,
   WorkflowOverviewListResultDTO,
 } from '@janus-idp/backstage-plugin-orchestrator-common';
@@ -39,11 +40,10 @@ export interface OrchestratorApi {
     includeAssessment: boolean,
   ): Promise<AxiosResponse<AssessedProcessInstanceDTO>>;
 
-  getWorkflowDataInputSchema(args: {
-    workflowId: string;
-    instanceId?: string;
-    assessmentInstanceId?: string;
-  }): Promise<WorkflowInputSchemaResponse>;
+  getWorkflowDataInputSchema(
+    workflowId: string,
+    instanceId?: string,
+  ): Promise<AxiosResponse<InputSchemaResponseDTO>>;
 
   getWorkflowOverview(
     workflowId: string,
