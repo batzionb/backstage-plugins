@@ -1,6 +1,73 @@
 ### Dependencies
 
-* **@janus-idp/backstage-plugin-orchestrator-common:** upgraded to 1.16.100
+* **@janus-idp/backstage-plugin-orchestrator-common:** upgraded to 1.20.0
+* **@janus-idp/cli:** upgraded to 1.15.2
+
+### Dependencies
+
+* **@janus-idp/backstage-plugin-orchestrator-common:** upgraded to 1.19.0
+
+### Dependencies
+
+* **@janus-idp/backstage-plugin-audit-log-node:** upgraded to 1.5.1
+
+### Dependencies
+
+* **@janus-idp/cli:** upgraded to 1.15.1
+
+### Dependencies
+
+* **@janus-idp/backstage-plugin-orchestrator-common:** upgraded to 1.18.2
+
+### Dependencies
+
+* **@janus-idp/backstage-plugin-orchestrator-common:** upgraded to 1.18.1
+
+### Dependencies
+
+* **@janus-idp/cli:** upgraded to 1.15.0
+
+### Dependencies
+
+* **@janus-idp/backstage-plugin-orchestrator-common:** upgraded to 1.18.0
+
+### Dependencies
+
+* **@janus-idp/backstage-plugin-orchestrator-common:** upgraded to 1.17.3
+
+### Dependencies
+
+* **@janus-idp/cli:** upgraded to 1.14.0
+* **@janus-idp/backstage-plugin-audit-log-node:** upgraded to 1.5.0
+* **@janus-idp/backstage-plugin-rbac-common:** upgraded to 1.10.0
+
+### Dependencies
+
+* **@janus-idp/cli:** upgraded to 1.13.2
+
+### Dependencies
+
+* **@janus-idp/backstage-plugin-audit-log-node:** upgraded to 1.4.1
+
+### Dependencies
+
+* **@janus-idp/backstage-plugin-orchestrator-common:** upgraded to 1.17.2
+
+### Dependencies
+
+* **@janus-idp/backstage-plugin-orchestrator-common:** upgraded to 1.17.1
+
+### Dependencies
+
+* **@janus-idp/backstage-plugin-orchestrator-common:** upgraded to 1.17.0
+
+### Dependencies
+
+* **@janus-idp/backstage-plugin-orchestrator-common:** upgraded to 1.16.0
+
+### Dependencies
+
+* **@janus-idp/backstage-plugin-orchestrator-common:** upgraded to 1.15.2
 
 ### Dependencies
 

@@ -1,8 +1,87 @@
 ### Dependencies
 
-* **@janus-idp/backstage-plugin-orchestrator-common:** upgraded to 1.16.100
-* **@janus-idp/backstage-plugin-orchestrator-form-api:** upgraded to 1.0.100
-* **@janus-idp/backstage-plugin-orchestrator-form-react:** upgraded to 1.0.100
+* **@janus-idp/backstage-plugin-orchestrator-common:** upgraded to 1.21.0
+* **@janus-idp/backstage-plugin-orchestrator-form-react:** upgraded to 1.2.0
+
+### Dependencies
+
+* **@janus-idp/backstage-plugin-orchestrator-common:** upgraded to 1.21.0
+* **@janus-idp/backstage-plugin-orchestrator-form-api:** upgraded to 1.2.0
+* **@janus-idp/backstage-plugin-orchestrator-form-react:** upgraded to 1.2.0
+
+### Dependencies
+
+* **@janus-idp/backstage-plugin-orchestrator-common:** upgraded to 1.20.0
+* **@janus-idp/backstage-plugin-orchestrator-form-react:** upgraded to 1.1.6
+* **@janus-idp/cli:** upgraded to 1.15.2
+
+### Dependencies
+
+* **@janus-idp/backstage-plugin-orchestrator-common:** upgraded to 1.19.0
+* **@janus-idp/backstage-plugin-orchestrator-form-react:** upgraded to 1.1.5
+
+### Dependencies
+
+* **@janus-idp/cli:** upgraded to 1.15.1
+
+### Dependencies
+
+* **@janus-idp/backstage-plugin-orchestrator-common:** upgraded to 1.18.2
+* **@janus-idp/backstage-plugin-orchestrator-form-react:** upgraded to 1.1.4
+
+### Dependencies
+
+* **@janus-idp/backstage-plugin-orchestrator-common:** upgraded to 1.18.1
+* **@janus-idp/backstage-plugin-orchestrator-form-react:** upgraded to 1.1.3
+
+### Dependencies
+
+* **@janus-idp/cli:** upgraded to 1.15.0
+
+### Dependencies
+
+* **@janus-idp/backstage-plugin-orchestrator-common:** upgraded to 1.18.0
+* **@janus-idp/backstage-plugin-orchestrator-form-react:** upgraded to 1.1.2
+
+### Dependencies
+
+* **@janus-idp/backstage-plugin-orchestrator-common:** upgraded to 1.17.3
+* **@janus-idp/backstage-plugin-orchestrator-form-react:** upgraded to 1.1.1
+
+### Dependencies
+
+* **@janus-idp/backstage-plugin-orchestrator-form-api:** upgraded to 1.1.0
+* **@janus-idp/backstage-plugin-orchestrator-form-react:** upgraded to 1.1.0
+* **@janus-idp/cli:** upgraded to 1.14.0
+
+### Dependencies
+
+* **@janus-idp/cli:** upgraded to 1.13.2
+
+### Dependencies
+
+* **@janus-idp/backstage-plugin-orchestrator-common:** upgraded to 1.17.2
+* **@janus-idp/backstage-plugin-orchestrator-form-react:** upgraded to 1.0.10
+
+### Dependencies
+
+* **@janus-idp/backstage-plugin-orchestrator-common:** upgraded to 1.17.1
+* **@janus-idp/backstage-plugin-orchestrator-form-react:** upgraded to 1.0.9
+
+### Dependencies
+
+* **@janus-idp/backstage-plugin-orchestrator-common:** upgraded to 1.17.0
+* **@janus-idp/backstage-plugin-orchestrator-form-react:** upgraded to 1.0.8
+
+### Dependencies
+
+* **@janus-idp/backstage-plugin-orchestrator-common:** upgraded to 1.16.0
+* **@janus-idp/backstage-plugin-orchestrator-form-react:** upgraded to 1.0.6
+
+### Dependencies
+
+* **@janus-idp/backstage-plugin-orchestrator-common:** upgraded to 1.15.2
+* **@janus-idp/backstage-plugin-orchestrator-form-react:** upgraded to 1.0.5
 
 ### Dependencies
 
