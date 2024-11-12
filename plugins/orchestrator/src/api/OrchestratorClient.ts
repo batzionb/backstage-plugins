@@ -115,17 +115,6 @@ export class OrchestratorClient implements OrchestratorApi {
     }
   }
 
-  async getWorkflowDefinition(workflowId: string): Promise<WorkflowDefinition> {
-    const baseUrl = await this.getBaseUrl();
-    try {
-      return await this.fetcher(`${baseUrl}/workflows/${workflowId}`).then(r =>
-        r.json(),
-      );
-    } catch (err) {
-      throw getError(err);
-    }
-  }
-
   async getWorkflowSource(workflowId: string): Promise<AxiosResponse<string>> {
     const defaultApi = await this.getDefaultAPI();
     const reqConfigOption: AxiosRequestConfig =

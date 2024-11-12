@@ -23,8 +23,6 @@ export interface OrchestratorApi {
     businessKey?: string;
   }): Promise<AxiosResponse<ExecuteWorkflowResponseDTO>>;
 
-  getWorkflowDefinition(workflowId: string): Promise<WorkflowDefinition>;
-
   getWorkflowSource(workflowId: string): Promise<AxiosResponse<string>>;
 
   getInstance(
